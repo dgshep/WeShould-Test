@@ -116,12 +116,14 @@ public class DBUnitTest extends AndroidTestCase{
         catch (SQLiteConstraintException success) {
         } 
    }
+   
+   */
 	public void testInsertItemTagRelationship(){
 		long return_val=tdb.insertItem_Tag(1,1);
 		assertTrue(return_val>0);
 	}
 	
-	*/
+	
 	public static Test suite(){
 		return new DBUnitTest();
 	}
