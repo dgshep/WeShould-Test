@@ -21,8 +21,9 @@ public class ListTest extends
 		for(Field f : fields) fieldSet.add(f);
 		C = new GenericCategory("Test Category", fieldSet);
 	}
-	public void testTrivial(){
+	public void testItems(){
 		assertTrue(C.getItems().size() == 0);
+		
 	}
 	
 }
