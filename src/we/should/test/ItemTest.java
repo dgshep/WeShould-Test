@@ -9,6 +9,7 @@ import android.test.ActivityInstrumentationTestCase2;
 public class ItemTest extends
 		ActivityInstrumentationTestCase2<WeShouldActivity> {
 	Category C;
+	Item it;
 
 	public ItemTest() {
 		super("we.should.WeShouldActivity", WeShouldActivity.class);
@@ -16,6 +17,10 @@ public class ItemTest extends
 	}
 	@Override
 	protected void setUp(){
+		
+		Item it = new GenericItem()
+	}
+	public void testSet(){
 		
 	}
 }
