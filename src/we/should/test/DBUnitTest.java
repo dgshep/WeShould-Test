@@ -1,22 +1,15 @@
 package we.should.test;
 
-
-import junit.framework.Test;
 import we.should.WeShouldActivity;
-import we.should.database.DBHelper;
 import we.should.database.WSdb;
-import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteConstraintException;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.test.ActivityInstrumentationTestCase2;
-import android.test.AndroidTestCase;
-import android.util.Log;
 
 /**
- * @author Troy
- *
+ * Test case for WeShould database - WSdb.java
+ * 
+ * @author  Troy Schuring
+ * 			CSE403 SP12
  */
 
 public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivity> {
@@ -27,17 +20,16 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 	
 	public DBUnitTest() {
 		super("we.should", WeShouldActivity.class);
-		// TODO Auto-generated constructor stub
 	}
 
-	@Override
+	@Override // Run before each test
 	public void setUp(){
 		db = new WSdb(getActivity());
 		db.open();
 		db.rebuildTables();
 	}
 
-	@Override
+	@Override  // Run after each test
 	public void tearDown() throws Exception {
 		db.close();
 	} 
@@ -49,15 +41,21 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 	} 
 	
 	
-	
-	
 	//***************************************************************
-	//		Open & Close
+	//		                 Open & Close
 	//***************************************************************
 
 	// verify open returns writable database
+	public void testOpenTwice(){
+		assertTrue(db.open());
+		db.close();
+	}
+	
+	// verify opening db twice doesn't crash
 	public void testOpenWritable(){
 		assertTrue(db.open());
+		db.open();
+		assertTrue(db.isOpen());
 		db.close();
 	}
 	
@@ -68,9 +66,18 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 		assertFalse(db.isOpen());
 	}
 	
+	//verify closing a closed db doesn't crash
+	public void testCloseTwice(){
+		assertTrue(db.open());
+		db.close();
+		assertFalse(db.isOpen());
+		db.close();
+		assertFalse(db.isOpen());
+	}
+	
 	
 	//***************************************************************
-	//		Insert Category
+	//		               Insert Category
 	//***************************************************************
 
 	
@@ -103,12 +110,16 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 	
 	// verify not null,empty string, or space-only string constraints
 	public void testInsertCategoryNullAndEmpty(){
+		
+		//nulls
 		return_val=db.insertCategory(null, "9e9f99", "testCat1 schema");
 		assertEquals(-1,return_val);
 		return_val=db.insertCategory("test2", null, "testCat1 schema");
 		assertEquals(-1,return_val);
 		return_val=db.insertCategory("test3", "9e9f99", null);
 		assertEquals(-1,return_val);
+		
+		//empty or space strings
 		return_val=db.insertCategory("", "9e9f99", "testCat1 schema");
 		assertEquals(-1,return_val);
 		return_val=db.insertCategory("test2", "    ", "testCat1 schema");
@@ -120,7 +131,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 	
 	
 	//***************************************************************
-	//		Insert Item
+	//		                Insert Item
 	//***************************************************************	
 	
 	// simple item insert
@@ -165,7 +176,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
  	
  
 	//***************************************************************
-	//		Insert Tag
+	//		                  Insert Tag
 	//***************************************************************
 	
 	// simple insert of tag
@@ -186,11 +197,11 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 	}
 
 	
-
 	//***************************************************************
-	//		Insert Item-Tag Relationship
+	//		          Insert Item-Tag Relationship
 	//***************************************************************    
    
+	// simple insert into item_tag table
 	public void testInsertItemTagRelationship(){
 		db.fillTables();
 		long return_val=db.insertItem_Tag(1,1);
@@ -211,19 +222,20 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     
     // test adding an item_tag with item id that does not exist
     public void testForItem_TagException1() {
-    	Cursor c=db.getItem(1);
-    	assertFalse(c.moveToNext()); // verify item with id=1 does not exist
+    	Cursor c=db.getItem(5);
+    	assertEquals(0,c.getCount());
+    	assertFalse(c.moveToNext()); // verify item with id=5 does not exist
     	return_val=db.insertTag("testTag1");
     	c=db.getTag(1);
     	assertTrue(c.moveToNext()); // verify tag with id=1 does exist
-    	return_val=db.insertItem_Tag(1, 1);
+    	return_val=db.insertItem_Tag(5, 1);
         assertEquals(-1,return_val);
     }
 
     
-    //*************************************************************************
-    //				Query Tests
-    //*************************************************************************
+    //***************************************************************
+    //				          Query Tests
+    //***************************************************************
 
     // verify proper number of records
  	public void testGetAllCategoriesNumber(){
@@ -259,8 +271,6 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
    		assertEquals(5,c.getCount());
    	}
 	
-	
-	
     //verify getItem returns proper item
    	public void testGetItem(){
   		//set values of item to check for
@@ -289,7 +299,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
  		assertEquals(data,c.getString(4));
   	}
     
-  //verify getItem returns proper Category
+   	//verify getItem returns proper Category
    	public void testGetCategory(){
   		//set values of item to check for
    		String name = "correct name";
@@ -333,7 +343,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
   	}
     
     
-    
+    // test get items of tag - three results
     public void testGetItemsOfTag(){
     	int[] expect = {2,4,5};
     	
@@ -364,6 +374,31 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     	assertEquals(expect[2],c.getInt(0));
     }
     
+    // test get items of tag - 0 results
+    public void testGetItemsOfTagNoResults(){
+    	int[] expect = {2,4,5};
+    	
+    	db.insertCategory("testCat1", "9e9f99", "testCat1 schema");
+  		db.insertCategory("testCat2", "9e9f99", "testCat2 schema");
+ 		db.insertItem("testItem1", 1, true, "testItem data");
+ 		db.insertItem("testItem2", 2, true, "testItem data");
+ 		db.insertItem("testItem3", 1, true, "testItem data");
+ 		db.insertItem("testItem4", 2, true, "testItem data");
+ 		db.insertItem("testItem5", 1, true, "testItem data");
+ 		db.insertTag("testTag1");
+   		db.insertTag("testTag2");
+   		db.insertTag("testTag3");
+   		db.insertTag("testTag4");
+ 		db.insertItem_Tag(1,1);
+ 		db.insertItem_Tag(2,2);
+ 		db.insertItem_Tag(4,2);
+ 		db.insertItem_Tag(5,2);
+ 		db.insertItem_Tag(5,1);
+    	
+ 		c=db.getItemsOfTag(3);
+ 		assertEquals(0,c.getCount());
+    	assertFalse(c.moveToNext());
+    }
     
     public void testGetTagsOfItem(){
     	int[] expect = {4,2,1};
@@ -394,6 +429,28 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     	c.moveToNext();
     	assertEquals(expect[2],c.getInt(0));
     }
+    
+    
+    //get items of category
+    public void testGetItemsOfCategory(){
+    	db.insertCategory("testCat1", "9e9f99", "testCat1 schema");
+  		db.insertCategory("testCat2", "9e9f99", "testCat2 schema");
+ 		db.insertItem("testItem1", 1, true, "testItem data");
+ 		db.insertItem("testItem2", 2, true, "testItem data");
+ 		db.insertItem("testItem3", 1, true, "testItem data");
+ 		db.insertItem("testItem4", 2, true, "testItem data");
+ 		db.insertItem("testItem5", 1, true, "testItem data");
+ 		
+ 		c=db.getItemsOfCategory(1);
+ 		assertEquals(3,c.getCount());
+    	c.moveToNext();
+    	assertEquals(1,c.getInt(0));
+    	c.moveToNext();
+    	assertEquals(3,c.getInt(0));
+    	c.moveToNext();
+    	assertEquals(5,c.getInt(0));
+    }
+    
     
     
   
@@ -467,5 +524,12 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     	c.moveToNext();
     	assertEquals(newname,c.getString(1));
     }
+    
+    //*************************************************************************
+    //				Delete Tests
+    //*************************************************************************
+
+    //TODO: Delete Tests
+    
     
 }
