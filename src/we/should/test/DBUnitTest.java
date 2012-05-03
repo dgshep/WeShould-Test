@@ -11,7 +11,7 @@ import android.test.ActivityInstrumentationTestCase2;
  * @author  Troy Schuring
  * 			CSE403 SP12
  */
-
+ 
 public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivity> {
 	
 	WSdb db;
