@@ -2,19 +2,22 @@ package we.should.test;
 
 import java.util.*;
 
+import junit.framework.TestCase;
+
 import we.should.WeShouldActivity;
 import we.should.list.*;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 
 public class ListTest extends
-		ActivityInstrumentationTestCase2<WeShouldActivity> {
+		TestCase {
 	Category C;
 	Item it;
 	List<Field> fieldSet;
 
 	public ListTest() {
-		super("we.should.WeShouldActivity", WeShouldActivity.class);
+		super();
+		//super("we.should.WeShouldActivity", WeShouldActivity.class);
 		// TODO Auto-generated constructor stub
 	}
 	@Override
