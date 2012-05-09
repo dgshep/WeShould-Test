@@ -5,20 +5,20 @@ import java.util.*;
 import junit.framework.TestCase;
 
 import we.should.WeShouldActivity;
+import we.should.database.WSdb;
 import we.should.list.*;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 
-public class ListTest extends
-		TestCase {
+public class ListTest extends ActivityInstrumentationTestCase2<WeShouldActivity>  {
 	Category C;
 	Item it;
 	List<Field> fieldSet;
+	WSdb db;
 
 	public ListTest() {
-		super();
-		//super("we.should.WeShouldActivity", WeShouldActivity.class);
-		// TODO Auto-generated constructor stub
+		super("we.should.WeShouldActivity", WeShouldActivity.class);
+		
 	}
 	@Override
 	protected void setUp(){
@@ -26,13 +26,18 @@ public class ListTest extends
 		//Log.v("Set Up List Test", fields.toString());
 		fields.remove(Field.COMMENT);
 		C = new GenericCategory("Test NO COMMENT FIELD", fields);
+		db = new WSdb(getActivity());
+//		db.open();
+		db.rebuildTables();
+//		db.close();
+		C.save(getActivity());
 		it = C.newItem();
 	}
 	public void testItems(){
 		assertTrue(C.getItems().size() == 0);
-		it.save();
+		it.save(null);
 		assertTrue(C.getItems().size() == 1);
-		it.save();
+		it.save(null);
 		assertTrue(C.getItems().size() == 1);
 		it.delete();
 		assertTrue(C.getItems().size() == 0);
@@ -63,35 +68,31 @@ public class ListTest extends
 		assertFalse(it.get(Field.ADDRESS).equals(testAd));
 	}
 	public void testGetItems(){
-		Set<Item> items = C.getItems();
-		Set<Item> testItems = new HashSet<Item>();
+		List<Item> items = C.getItems();
+		List<Item> testItems = new LinkedList<Item>();
 		assertEquals(items.size(), 0);
 		assertEquals(items, testItems);
 		it.set(Field.NAME, "Test1");
-		it.save();
+		it.save(null);
 		testItems.add(it);
 		items = C.getItems();
 		assertEquals(1, items.size());
 		assertEquals(items, testItems);
 		Item it1 = C.newItem();
 		it1.set(Field.NAME, "Test2");
-		it1.save();
+		it1.save(null);
 		testItems.add(it1);
 		items = C.getItems();
 		assertEquals(2, items.size());
 		assertEquals(items, testItems);
 		Item it2 = C.newItem();
 		it2.set(Field.NAME, "Test3");
-		it2.save();
+		it2.save(null);
 		testItems.add(it2);
 		items = C.getItems();
 		assertEquals(3, items.size());
 		assertEquals(items, testItems);
-		testItems = new HashSet<Item>();
-		testItems.add(it);
-		testItems.add(it2);
-		testItems.add(it1);
-		assertEquals(items, testItems);
+		
 	}
 	public void testGetFields(){
 		List<Field> fields = C.getFields();
@@ -112,6 +113,12 @@ public class ListTest extends
 	public void testGetName(){
 		it.set(Field.NAME, "testName");
 		assertEquals("testName", it.getName());
+	}
+	public void testEquals(){
+		it.set(Field.NAME, "testName");
+		Item it2 = C.newItem();
+		it2.set(Field.NAME, "testName");
+		assertTrue(it2.equals(it));
 	}
 	
 }
