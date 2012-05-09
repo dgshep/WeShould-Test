@@ -31,7 +31,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 
 	@Override  // Run after each test
 	public void tearDown() throws Exception {
-		db.close();
+		if(db.isOpen()) db.close();
 	} 
 
 	@Override 
@@ -529,7 +529,28 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     //				Delete Tests
     //*************************************************************************
 
-    //TODO: Delete Tests
+    public void testDeleteCatReinsert(){
+    	return_val=db.insertCategory("testCat1", "9e9f99", "testCat1 schema");
+    	int id = (int) return_val;
+		return_val=db.insertCategory("testCat1", "888888", "testCat2 schema");
+		assertEquals(-1,return_val);
+		assertTrue(id != -1);
+		assertTrue(db.deleteCategory(id));
+		return_val = db.insertCategory("testCat1", "888888", "testCat2 schema");
+		assertTrue(return_val != -1);
+    }
+    public void testDeleteItemReinsert(){
+    	return_val=db.insertCategory("testCat1", "9e9f99", "testCat1 schema");
+    	return_val=db.insertItem("testIt1", 1, false, "Data");
+    	int id = (int) return_val;
+		return_val=db.insertItem("testIt1", 1, false, "Different Data");
+		assertEquals(-1,return_val);
+		assertTrue(id != -1);
+		assertTrue(db.deleteItem(id));
+		return_val = db.insertItem("testIt1", 1, false, "Different Data");
+		assertTrue(return_val != -1);
+    }
+    //TODO
     
     
 }
