@@ -7,6 +7,7 @@ import junit.framework.TestCase;
 import we.should.WeShouldActivity;
 import we.should.database.WSdb;
 import we.should.list.*;
+import android.location.Address;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 
@@ -27,9 +28,9 @@ public class ListTest extends ActivityInstrumentationTestCase2<WeShouldActivity>
 		fields.remove(Field.COMMENT);
 		C = new GenericCategory("Test NO COMMENT FIELD", fields);
 		db = new WSdb(getActivity());
-//		db.open();
+		db.open();
 		db.rebuildTables();
-//		db.close();
+		db.close();
 		C.save(getActivity());
 		it = C.newItem();
 	}
@@ -119,6 +120,15 @@ public class ListTest extends ActivityInstrumentationTestCase2<WeShouldActivity>
 		Item it2 = C.newItem();
 		it2.set(Field.NAME, "testName");
 		assertTrue(it2.equals(it));
+		assertTrue(it.equals(it));
+	}
+	public void testGetAddresses(){
+		it.set(Field.ADDRESS, "4012 NE 58th St, 98105");
+		Set<Address> add = it.getAddresses(getActivity());
+		for(Address a : add){
+			assertEquals(47.671645, a.getLatitude(), .001);
+			assertEquals(-122.284233, a.getLongitude(), .001);
+		}
 	}
 	
 }

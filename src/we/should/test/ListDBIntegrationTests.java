@@ -30,21 +30,16 @@ public class ListDBIntegrationTests extends
 		
 		// TODO Auto-generated constructor stub
 	}
-//	@Override
-//	protected void setUp(){
-//		db = new WSdb(getActivity());
-//		db.open();
-//		db.rebuildTables();
-//		c = new GenericCategory("test", Field.getDefaultFields());
-//	}
-//	@Override
-//	protected void tearDown(){
-//		db.close();
-//	}
+	@Override
+	protected void setUp(){
+		c = new GenericCategory("test", Field.getDefaultFields());
+	}
+	
 	public void testDbOpen(){
 		db = new WSdb(getActivity());
 		db.open();
 		db.rebuildTables();
+		db.close();
 		List<Field> dF = Field.getDefaultFields();
 		for(int i= 0; i < 100; i++){
 			c = new GenericCategory(i+"", dF);
@@ -56,7 +51,6 @@ public class ListDBIntegrationTests extends
 			assertTrue(cats.contains(new GenericCategory(i+"", dF)));
 		}
 		assertTrue(true);
-		db.close();
 	}
 	public void testGetItems(){
 		c = new GenericCategory("master", Field.getDefaultFields());
@@ -65,6 +59,11 @@ public class ListDBIntegrationTests extends
 		i.set(Field.ADDRESS, "4012 NE 58th");
 		i.set(Field.NAME, "BIKE HOUSE");
 		i.set(Field.PHONENUMBER, "555-5555");
+		i.save(getActivity());
+		i = c.newItem();
+		i.set(Field.ADDRESS, "4014 NE 58th");
+		i.set(Field.NAME, "NOT BIKE HOUSE");
+		i.set(Field.PHONENUMBER, "1-800-555-5555");
 		i.save(getActivity());
 		c = null;
 		Set<Category> cats = Category.getCategories(getActivity());
@@ -76,8 +75,14 @@ public class ListDBIntegrationTests extends
 				break;
 			}
 		}
-		assertEquals(1, its.size());
+		assertEquals(2, its.size());
 		Item it = its.get(0);
 		assertEquals("BIKE HOUSE", it.get(Field.NAME));
+		assertEquals("4012 NE 58th", it.get(Field.ADDRESS));
+		assertEquals("555-5555", it.get(Field.PHONENUMBER));
+		it = its.get(1);
+		assertEquals("NOT BIKE HOUSE", it.get(Field.NAME));
+		assertEquals("4014 NE 58th", it.get(Field.ADDRESS));
+		assertEquals("1-800-555-5555", it.get(Field.PHONENUMBER));
 	}
 }
