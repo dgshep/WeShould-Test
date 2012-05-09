@@ -110,6 +110,7 @@ public class ListDBIntegrationTests extends
 		}
 		assertEquals(1, its.size());
 		Item it = its.get(0);
-		assertEquals("New BIKE HOUSE", it.get(Field.NAME));
+		assertEquals("New BIKE HOUSE", it.getName());
+		assertEquals("This is new.", it.getComment());
 	}
 }
