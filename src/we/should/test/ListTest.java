@@ -2,27 +2,36 @@ package we.should.test;
 
 import java.util.*;
 
+import junit.framework.TestCase;
+
 import we.should.WeShouldActivity;
+import we.should.database.WSdb;
 import we.should.list.*;
+import android.location.Address;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 
-public class ListTest extends
-		ActivityInstrumentationTestCase2<WeShouldActivity> {
+public class ListTest extends ActivityInstrumentationTestCase2<WeShouldActivity>  {
 	Category C;
 	Item it;
 	List<Field> fieldSet;
+	WSdb db;
 
 	public ListTest() {
 		super("we.should.WeShouldActivity", WeShouldActivity.class);
-		// TODO Auto-generated constructor stub
+		
 	}
 	@Override
 	protected void setUp(){
 		List<Field> fields = Field.getDefaultFields();
 		//Log.v("Set Up List Test", fields.toString());
 		fields.remove(Field.COMMENT);
-		C = new GenericCategory("Test NO COMMENT FIELD", fields);
+		C = new GenericCategory("Test NO COMMENT FIELD", fields, null);
+		db = new WSdb(getActivity());
+		db.open();
+		db.rebuildTables();
+		db.close();
+		C.save();
 		it = C.newItem();
 	}
 	public void testItems(){
@@ -60,8 +69,8 @@ public class ListTest extends
 		assertFalse(it.get(Field.ADDRESS).equals(testAd));
 	}
 	public void testGetItems(){
-		Set<Item> items = C.getItems();
-		Set<Item> testItems = new HashSet<Item>();
+		List<Item> items = C.getItems();
+		List<Item> testItems = new LinkedList<Item>();
 		assertEquals(items.size(), 0);
 		assertEquals(items, testItems);
 		it.set(Field.NAME, "Test1");
@@ -84,11 +93,7 @@ public class ListTest extends
 		items = C.getItems();
 		assertEquals(3, items.size());
 		assertEquals(items, testItems);
-		testItems = new HashSet<Item>();
-		testItems.add(it);
-		testItems.add(it2);
-		testItems.add(it1);
-		assertEquals(items, testItems);
+		
 	}
 	public void testGetFields(){
 		List<Field> fields = C.getFields();
@@ -97,7 +102,7 @@ public class ListTest extends
 		assertEquals(testFields, fields);
 	}
 	public void testGetComment(){
-		Category Ctest = new GenericCategory("Default", Field.getDefaultFields());
+		Category Ctest = new GenericCategory("Default", Field.getDefaultFields(), getActivity());
 		Item testItem = Ctest.newItem();
 		testItem.set(Field.COMMENT, "test Comment");
 		assertEquals("test Comment", testItem.getComment());
@@ -109,6 +114,42 @@ public class ListTest extends
 	public void testGetName(){
 		it.set(Field.NAME, "testName");
 		assertEquals("testName", it.getName());
+	}
+	public void testEquals(){
+		it.set(Field.NAME, "testName");
+		Item it2 = C.newItem();
+		it2.set(Field.NAME, "testName");
+		assertTrue(it2.equals(it));
+		assertTrue(it.equals(it));
+	}
+	public void testGetAddresses(){
+		C = new GenericCategory("With Context", Field.getDefaultFields(), getActivity());
+		it = C.newItem();
+		it.set(Field.ADDRESS, "4012 NE 58th St, 98105");
+		Set<Address> add = it.getAddresses();
+		for(Address a : add){
+			try{
+				assertEquals(47.671645, a.getLatitude(), .001);
+				assertEquals(-122.284233, a.getLongitude(), .001);
+			}catch(IllegalStateException e){
+				assertEquals(a.getAddressLine(0), "4012 NE 58th St, 98105");
+			}
+		}
+	}
+	public void testTags(){
+		Set<String> tags = it.getTags();
+		assertEquals(0, tags.size());
+		it.addTag("AWESOME");
+		tags = it.getTags();
+		assertEquals(1, tags.size());
+		assertEquals("AWESOME", tags.iterator().next());
+		it.addTag("AWESOME");
+		tags = it.getTags();
+		assertEquals(1, tags.size());
+		it.addTag("Cool  realy     cool");
+		it.addTag("testTag");
+		tags = it.getTags();
+		assertEquals(3, tags.size());
 	}
 	
 }
