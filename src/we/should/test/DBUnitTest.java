@@ -83,7 +83,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 	
 	// simple category insert into empty database
 	public void testInsertCategory(){
-		db.insertColor("TestColor", "ffffff", "link to drawable");
+		//db.insertColor("TestColor", "ffffff", "link to drawable");
 		return_val=db.insertCategory("testCat1", 1, "testCat1 schema");
 		c=db.getCategory((int)return_val);
 		assertTrue(c.moveToNext());
@@ -92,7 +92,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 	
 	// verify unique name constraint
 	public void testInsertDuplicateCategoryFail(){
-		db.insertColor("TestColor", "ffffff", "link to drawable");
+		//db.insertColor("TestColor", "ffffff", "link to drawable");
 		return_val=db.insertCategory("testCat1", 1, "testCat1 schema");
 		return_val=db.insertCategory("testCat1", 1, "testCat2 schema");
 		c=db.getAllCategories();
@@ -102,7 +102,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 	
 	// verify not null,empty string, or space-only string constraints
 	public void testInsertCategoryNullAndEmpty(){
-		db.insertColor("TestColor", "ffffff", "link to drawable");
+		//db.insertColor("TestColor", "ffffff", "link to drawable");
 		//nulls
 		return_val=db.insertCategory(null, 1, "testCat1 schema");
 		assertEquals(-1,return_val);
@@ -116,13 +116,13 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 		assertEquals(-1,return_val);
 	}
 	
-	// verify failed insert with color id that does not exist
+	/* verify failed insert with color id that does not exist
 	public void testInsertInvalidColorId(){
 		db.insertColor("TestColor", "ffffff", "link to drawable");
 		return_val=db.insertCategory("name", 2, "testCat1 schema");
 		assertEquals(-1,return_val);
 	}
-	
+	*/
 	
 	//***************************************************************
 	//		                Insert Item
@@ -130,7 +130,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 	
 	// simple item insert
 	public void testInsertItem(){
-		db.insertColor("TestColor", "ffffff", "link to drawable");
+		//db.insertColor("TestColor", "ffffff", "link to drawable");
 		db.insertCategory("test", 1, "schema");
 		return_val=db.insertItem("testItem1", 1, "testItem1 data");
 		c=db.getAllItems();
@@ -156,7 +156,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
  // verify not null,empty string, or space-only string constraints 	
     public void testInsertItemNullAndEmpty(){
     	// inserted color will have id=1
-    	db.insertColor("TestColor", "ffffff", "link to drawable");
+    	//db.insertColor("TestColor", "ffffff", "link to drawable");
  		db.insertCategory("test", 1, "schema");
     	return_val=db.insertItem(null, 1, "testItem1 data");
  		assertEquals(-1,return_val);
@@ -218,7 +218,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 
 	// test adding an item_tag with tag id that does not exist
     public void testItem_TagFailNoTag() {
-    	db.insertColor("TestColor", "ffffff", "link to drawable");
+    	//db.insertColor("TestColor", "ffffff", "link to drawable");
     	db.insertCategory("testCat1", 1, "testCat1 schema");
     	db.insertItem("testItem1", 1, "testItem1 data");
     	c=db.getItem(1);
@@ -244,7 +244,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     //***************************************************************
     //				          Insert Color
     //***************************************************************
-    
+    /*
     public void testInsertColor(){
     	String name="testColor";
     	String color="ffffff";
@@ -263,7 +263,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 
     }
     
-    
+    */
     
     
     //***************************************************************
@@ -272,7 +272,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 
     // verify proper number of records
  	public void testGetAllCategoriesNumber(){
-    	db.insertColor("TestColor", "ffffff", "link to drawable");
+    	//db.insertColor("TestColor", "ffffff", "link to drawable");
  		db.insertCategory("testCat1", 1, "testCat1 schema");
  		db.insertCategory("testCat2", 1, "testCat2 schema");
  		db.insertCategory("testCat3", 1, "testCat3 schema");
@@ -284,7 +284,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     
  	// verify proper number of records
   	public void testGetAllItemsNumber(){
-  		db.insertColor("TestColor", "ffffff", "link to drawable");
+  		//db.insertColor("TestColor", "ffffff", "link to drawable");
   		db.insertCategory("testCat1", 1, "testCat1 schema");
  		db.insertItem("testItem1", 1, "testItem data");
  		db.insertItem("testItem2", 1, "testItem data");
@@ -314,7 +314,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
    		String data = "correct data";
    		
    		//insert data into database
-   		db.insertColor("TestColor", "ffffff", "link to drawable");
+   		//db.insertColor("TestColor", "ffffff", "link to drawable");
    		db.insertCategory("testCat1", 1, "testCat1 schema");
   		db.insertCategory("testCat2", 1, "testCat2 schema");
  		db.insertItem("testItem1", 1, "testItem data");
@@ -340,7 +340,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
   		int color = 1;
    		String data = "correct schema";
    		
-   		db.insertColor("TestColor", "ffffff", "link to drawable");
+   		//db.insertColor("TestColor", "ffffff", "link to drawable");
    		//insert data into database
    		db.insertCategory("testCat1", 1, "testCat1 schema");
  		db.insertCategory("testCat2", 1, "testCat2 schema");
@@ -382,7 +382,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     public void testGetItemsOfTag(){
     	int[] expect = {2,4,5};
     	
-    	db.insertColor("TestColor", "ffffff", "link to drawable");
+    	//db.insertColor("TestColor", "ffffff", "link to drawable");
     	db.insertCategory("testCat1", 1, "testCat1 schema");
   		db.insertCategory("testCat2", 1, "testCat2 schema");
  		db.insertItem("testItem1", 1, "testItem data");
@@ -413,7 +413,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     // test get items of tag - 0 results
     public void testGetItemsOfTagNoResults(){
     	int[] expect = {2,4,5};
-    	db.insertColor("TestColor", "ffffff", "link to drawable");
+    	//db.insertColor("TestColor", "ffffff", "link to drawable");
     	db.insertCategory("testCat1", 1, "testCat1 schema");
   		db.insertCategory("testCat2", 1, "testCat2 schema");
  		db.insertItem("testItem1", 1, "testItem data");
@@ -439,7 +439,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     public void testGetTagsOfItem(){
     	int[] expect = {4,2,1};
     	
-    	db.insertColor("TestColor", "ffffff", "link to drawable");
+    	//db.insertColor("TestColor", "ffffff", "link to drawable");
     	db.insertCategory("testCat1", 1, "testCat1 schema");
   		db.insertCategory("testCat2", 1, "testCat2 schema");
  		db.insertItem("testItem1", 1, "testItem data");
@@ -470,7 +470,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     
     //get items of category
     public void testGetItemsOfCategory(){
-    	db.insertColor("TestColor", "ffffff", "link to drawable");
+    	//db.insertColor("TestColor", "ffffff", "link to drawable");
     	db.insertCategory("testCat1", 1, "testCat1 schema");
   		db.insertCategory("testCat2", 1, "testCat2 schema");
  		db.insertItem("testItem1", 1, "testItem data");
@@ -576,27 +576,56 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     //*************************************************************************
 
     public void testDeleteCatReinsert(){
-    	return_val=db.insertCategory("testCat1", "9e9f99", "testCat1 schema");
+    	//db.insertColor("sdf", "000000", "link");
+    	return_val=db.insertCategory("testCat1", 1, "testCat1 schema");
     	int id = (int) return_val;
-		return_val=db.insertCategory("testCat1", "888888", "testCat2 schema");
+		return_val=db.insertCategory("testCat1", 1, "testCat2 schema");
 		assertEquals(-1,return_val);
 		assertTrue(id != -1);
 		assertTrue(db.deleteCategory(id));
-		return_val = db.insertCategory("testCat1", "888888", "testCat2 schema");
+		return_val = db.insertCategory("testCat1", 1, "testCat2 schema");
 		assertTrue(return_val != -1);
     }
     public void testDeleteItemReinsert(){
-    	return_val=db.insertCategory("testCat1", "9e9f99", "testCat1 schema");
-    	return_val=db.insertItem("testIt1", 1, false, "Data");
+    	//db.insertColor("sdf", "000000", "link");
+    	return_val=db.insertCategory("testCat1", 1, "testCat1 schema");
+    	return_val=db.insertItem("testIt1", 1, "Data");
+    	assertEquals(return_val,1);
     	int id = (int) return_val;
-		return_val=db.insertItem("testIt1", 1, false, "Different Data");
+    	assertEquals(id,1);
+		return_val=db.insertItem("testIt1", 1, "Different Data");
+		assertEquals(return_val,-1);
 		assertEquals(-1,return_val);
 		assertTrue(id != -1);
 		assertTrue(db.deleteItem(id));
-		return_val = db.insertItem("testIt1", 1, false, "Different Data");
+		return_val = db.insertItem("testIt1", 1, "Different Data");
 		assertTrue(return_val != -1);
     }
     //TODO
     
     
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

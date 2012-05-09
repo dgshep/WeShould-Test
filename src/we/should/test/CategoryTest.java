@@ -17,6 +17,7 @@ public class CategoryTest extends TestCase {
 	public void setUp(){
 		
 	}
+	
 	public void testSetColor(){
 		Category c = new GenericCategory("Test", Field.getDefaultFields(), null);
 		assertTrue(c.getColor().equals(c.DEFAULT_COLOR));
@@ -46,4 +47,5 @@ public class CategoryTest extends TestCase {
 		assertFalse(c1.equals(c3));
 		assertFalse(c1.equals(c4));
 	}
+	
 }
