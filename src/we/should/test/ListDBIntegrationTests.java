@@ -30,6 +30,7 @@ public class ListDBIntegrationTests extends
 		
 		// TODO Auto-generated constructor stub
 	}
+	
 	@Override
 	protected void setUp(){
 		c = new GenericCategory("test", Field.getDefaultFields(), getActivity());
@@ -113,4 +114,5 @@ public class ListDBIntegrationTests extends
 		assertEquals("New BIKE HOUSE", it.getName());
 		assertEquals("This is new.", it.getComment());
 	}
+	
 }

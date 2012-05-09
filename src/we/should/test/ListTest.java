@@ -21,6 +21,7 @@ public class ListTest extends ActivityInstrumentationTestCase2<WeShouldActivity>
 		super("we.should.WeShouldActivity", WeShouldActivity.class);
 		
 	}
+	
 	@Override
 	protected void setUp(){
 		List<Field> fields = Field.getDefaultFields();
