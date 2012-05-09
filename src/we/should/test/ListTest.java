@@ -26,19 +26,19 @@ public class ListTest extends ActivityInstrumentationTestCase2<WeShouldActivity>
 		List<Field> fields = Field.getDefaultFields();
 		//Log.v("Set Up List Test", fields.toString());
 		fields.remove(Field.COMMENT);
-		C = new GenericCategory("Test NO COMMENT FIELD", fields);
+		C = new GenericCategory("Test NO COMMENT FIELD", fields, null);
 		db = new WSdb(getActivity());
 		db.open();
 		db.rebuildTables();
 		db.close();
-		C.save(getActivity());
+		C.save();
 		it = C.newItem();
 	}
 	public void testItems(){
 		assertTrue(C.getItems().size() == 0);
-		it.save(null);
+		it.save();
 		assertTrue(C.getItems().size() == 1);
-		it.save(null);
+		it.save();
 		assertTrue(C.getItems().size() == 1);
 		it.delete();
 		assertTrue(C.getItems().size() == 0);
@@ -74,21 +74,21 @@ public class ListTest extends ActivityInstrumentationTestCase2<WeShouldActivity>
 		assertEquals(items.size(), 0);
 		assertEquals(items, testItems);
 		it.set(Field.NAME, "Test1");
-		it.save(null);
+		it.save();
 		testItems.add(it);
 		items = C.getItems();
 		assertEquals(1, items.size());
 		assertEquals(items, testItems);
 		Item it1 = C.newItem();
 		it1.set(Field.NAME, "Test2");
-		it1.save(null);
+		it1.save();
 		testItems.add(it1);
 		items = C.getItems();
 		assertEquals(2, items.size());
 		assertEquals(items, testItems);
 		Item it2 = C.newItem();
 		it2.set(Field.NAME, "Test3");
-		it2.save(null);
+		it2.save();
 		testItems.add(it2);
 		items = C.getItems();
 		assertEquals(3, items.size());
@@ -102,7 +102,7 @@ public class ListTest extends ActivityInstrumentationTestCase2<WeShouldActivity>
 		assertEquals(testFields, fields);
 	}
 	public void testGetComment(){
-		Category Ctest = new GenericCategory("Default", Field.getDefaultFields());
+		Category Ctest = new GenericCategory("Default", Field.getDefaultFields(), getActivity());
 		Item testItem = Ctest.newItem();
 		testItem.set(Field.COMMENT, "test Comment");
 		assertEquals("test Comment", testItem.getComment());
@@ -123,12 +123,33 @@ public class ListTest extends ActivityInstrumentationTestCase2<WeShouldActivity>
 		assertTrue(it.equals(it));
 	}
 	public void testGetAddresses(){
+		C = new GenericCategory("With Context", Field.getDefaultFields(), getActivity());
+		it = C.newItem();
 		it.set(Field.ADDRESS, "4012 NE 58th St, 98105");
-		Set<Address> add = it.getAddresses(getActivity());
+		Set<Address> add = it.getAddresses();
 		for(Address a : add){
-			assertEquals(47.671645, a.getLatitude(), .001);
-			assertEquals(-122.284233, a.getLongitude(), .001);
+			try{
+				assertEquals(47.671645, a.getLatitude(), .001);
+				assertEquals(-122.284233, a.getLongitude(), .001);
+			}catch(IllegalStateException e){
+				assertEquals(a.getAddressLine(0), "4012 NE 58th St, 98105");
+			}
 		}
+	}
+	public void testTags(){
+		Set<String> tags = it.getTags();
+		assertEquals(0, tags.size());
+		it.addTag("AWESOME");
+		tags = it.getTags();
+		assertEquals(1, tags.size());
+		assertEquals("AWESOME", tags.iterator().next());
+		it.addTag("AWESOME");
+		tags = it.getTags();
+		assertEquals(1, tags.size());
+		it.addTag("Cool  realy     cool");
+		it.addTag("testTag");
+		tags = it.getTags();
+		assertEquals(3, tags.size());
 	}
 	
 }

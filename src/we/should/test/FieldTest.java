@@ -31,20 +31,6 @@ public class FieldTest extends TestCase {
 		super(name);
 		
 	}
-	public void testToDB(){
-		assertEquals(Field.ADDRESS.getName() + ":" + 1, Field.ADDRESS.toDB());
-		Field test = new Field(Field.ADDRESS.toDB());
-		assertEquals(Field.ADDRESS.getName(), test.getName());
-		assertEquals(Field.ADDRESS.getType(), test.getType());
-	}
-	public void testNewField(){
-		Field test = new Field("name", FieldType.Rating);
-		assertEquals(test.getName(), "name");
-		assertEquals(test.getType(), FieldType.Rating);
-		Field test2 = new Field(test.toDB());
-		assertEquals(test.getName(), test2.getName());
-		assertEquals(test.getType(), test2.getType());
-	}
 	public void testEquals(){
 		Field test1 = new Field("name", FieldType.MultilineTextField);
 		Field test2 = new Field("name", FieldType.MultilineTextField);
