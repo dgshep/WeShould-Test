@@ -9,6 +9,7 @@ import we.should.list.Category;
 import we.should.list.Field;
 import we.should.list.GenericCategory;
 import we.should.list.Item;
+import we.should.list.Tag;
 import android.test.ActivityInstrumentationTestCase2;
 /**
  * This tests the interaction between the Database and List packages.
@@ -85,7 +86,6 @@ public class ListDBIntegrationTests extends
 		assertEquals("4014 NE 58th", it.get(Field.ADDRESS));
 		assertEquals("1-800-555-5555", it.get(Field.PHONENUMBER));
 		assertEquals(2, it.getTags().size());
-		
 	}
 	public void testGetItemsDuplicates(){
 		c = new GenericCategory("master1", Field.getMovieFields(), getActivity());
@@ -112,4 +112,20 @@ public class ListDBIntegrationTests extends
 		assertEquals("This is new.", it.getComment());
 	}
 	
+	public void testTagStatic(){
+		Item it1 = c.newItem();
+		Item it2 = c.newItem();
+		it1.addTag("test");
+		it2.addTag("test");
+		it1.save();
+		it2.save();
+		Set<Tag> tags = Tag.getTags(getActivity());
+		assertEquals(1, tags.size());
+		Set<Item> testItems = Item.getItemsOfTag(tags.iterator().next(), getActivity());
+		assertEquals(2, testItems.size());
+		it1.addTag("test1");
+		it1.save();
+		tags = Tag.getTags(getActivity());
+		assertEquals(2, tags.size());
+	}
 }
