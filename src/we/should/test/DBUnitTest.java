@@ -132,7 +132,11 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 	public void testInsertItem(){
 		db.insertCategory("test", 1, "schema");
 		return_val=db.insertItem("testItem1", 1, "testItem1 data");
+		assertTrue(return_val>0);
+		return_val=db.insertItem("testItem2", 1, "testItem2 data");
+		assertTrue(return_val>0);
 		c=db.getAllItems();
+		assertTrue(c.moveToNext());
 		assertTrue(c.moveToNext());
 	}
 	
@@ -202,6 +206,8 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 		long return_val=db.insertItem_Tag(2,1);
 		assertTrue(return_val>0);
 		assertTrue(db.isItemTagged(2, 1));
+		Cursor c = db.getItemsOfTag(1);
+		assertTrue(c.getCount()>0);
 	}
 	
 	// insert item tag that already exists
