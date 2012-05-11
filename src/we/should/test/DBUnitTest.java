@@ -575,33 +575,33 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     //				Delete Tests
     //*************************************************************************
 
-    public void testDeleteCatReinsert(){
-    	//db.insertColor("sdf", "000000", "link");
-    	return_val=db.insertCategory("testCat1", 1, "testCat1 schema");
-    	int id = (int) return_val;
-		return_val=db.insertCategory("testCat1", 1, "testCat2 schema");
-		assertEquals(-1,return_val);
-		assertTrue(id != -1);
-		assertTrue(db.deleteCategory(id));
-		return_val = db.insertCategory("testCat1", 1, "testCat2 schema");
-		assertTrue(return_val != -1);
-    }
-    public void testDeleteItemReinsert(){
-    	//db.insertColor("sdf", "000000", "link");
-    	return_val=db.insertCategory("testCat1", 1, "testCat1 schema");
-    	return_val=db.insertItem("testIt1", 1, "Data");
-    	assertEquals(return_val,1);
-    	int id = (int) return_val;
-    	assertEquals(id,1);
-		return_val=db.insertItem("testIt1", 1, "Different Data");
-		assertEquals(return_val,-1);
-		assertEquals(-1,return_val);
-		assertTrue(id != -1);
-		assertTrue(db.deleteItem(id));
-		return_val = db.insertItem("testIt1", 1, "Different Data");
-		assertTrue(return_val != -1);
-    }
-    //TODO
+//    public void testDeleteCatReinsert(){
+//    	//db.insertColor("sdf", "000000", "link");
+//    	return_val=db.insertCategory("testCat1", 1, "testCat1 schema");
+//    	int id = (int) return_val;
+//		return_val=db.insertCategory("testCat1", 1, "testCat2 schema");
+//		assertEquals(-1,return_val);
+//		assertTrue(id != -1);
+//		assertTrue(db.deleteCategory(id));
+//		return_val = db.insertCategory("testCat1", 1, "testCat2 schema");
+//		assertTrue(return_val != -1);
+//    }
+//    public void testDeleteItemReinsert(){
+//    	//db.insertColor("sdf", "000000", "link");
+//    	return_val=db.insertCategory("testCat1", 1, "testCat1 schema");
+//    	return_val=db.insertItem("testIt1", 1, "Data");
+//    	assertEquals(return_val,1);
+//    	int id = (int) return_val;
+//    	assertEquals(id,1);
+//		return_val=db.insertItem("testIt1", 1, "Different Data");
+//		assertEquals(return_val,-1);
+//		assertEquals(-1,return_val);
+//		assertTrue(id != -1);
+//		assertTrue(db.deleteItem(id));
+//		return_val = db.insertItem("testIt1", 1, "Different Data");
+//		assertTrue(return_val != -1);
+//    }
+//    //TODO
     
     
 }

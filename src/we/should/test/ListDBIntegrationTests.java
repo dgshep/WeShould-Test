@@ -1,18 +1,15 @@
 package we.should.test;
 
-import java.io.IOException;
-import java.util.*;
-
-import org.json.JSONException;
+import java.util.List;
+import java.util.Set;
 
 import we.should.WeShouldActivity;
 import we.should.database.WSdb;
-import we.should.list.*;
-import android.database.Cursor;
-import android.location.Address;
-import android.location.Geocoder;
+import we.should.list.Category;
+import we.should.list.Field;
+import we.should.list.GenericCategory;
+import we.should.list.Item;
 import android.test.ActivityInstrumentationTestCase2;
-import android.util.Log;
 /**
  * This tests the interaction between the Database and List packages.
  * 
@@ -51,7 +48,6 @@ public class ListDBIntegrationTests extends
 		for(int i = 0; i < 100; i++){
 			assertTrue(cats.contains(new GenericCategory(i+"", dF, getActivity())));
 		}
-		assertTrue(true);
 	}
 	public void testGetItems(){
 		c = new GenericCategory("master", Field.getDefaultFields(), getActivity());
@@ -89,6 +85,7 @@ public class ListDBIntegrationTests extends
 		assertEquals("4014 NE 58th", it.get(Field.ADDRESS));
 		assertEquals("1-800-555-5555", it.get(Field.PHONENUMBER));
 		assertEquals(2, it.getTags().size());
+		
 	}
 	public void testGetItemsDuplicates(){
 		c = new GenericCategory("master1", Field.getMovieFields(), getActivity());
