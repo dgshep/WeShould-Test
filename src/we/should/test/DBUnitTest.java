@@ -3,7 +3,10 @@ package we.should.test;
 import we.should.WeShouldActivity;
 import we.should.database.WSdb;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
+import android.database.sqlite.SQLiteException;
 import android.test.ActivityInstrumentationTestCase2;
+import android.util.Log;
 
 /**
  * Test case for WeShould database - WSdb.java
@@ -16,6 +19,8 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 	
 	WSdb db;
 	long return_val;
+	int id;
+	int error;
 	Cursor c;
 	
 	public DBUnitTest() {
@@ -83,46 +88,68 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 	
 	// simple category insert into empty database
 	public void testInsertCategory(){
-		//db.insertColor("TestColor", "ffffff", "link to drawable");
-		return_val=db.insertCategory("testCat1", 1, "testCat1 schema");
-		c=db.getCategory((int)return_val);
+		return_val=db.insertCategory("testCat1", 1, "testCat1 schema");			c=db.getCategory((int)return_val);
 		assertTrue(c.moveToNext());
+		c.close();
 	}
 	
 	
 	// verify unique name constraint
 	public void testInsertDuplicateCategoryFail(){
-		//db.insertColor("TestColor", "ffffff", "link to drawable");
+		int error=0;
 		return_val=db.insertCategory("testCat1", 1, "testCat1 schema");
-		return_val=db.insertCategory("testCat1", 1, "testCat2 schema");
+		try{
+			return_val=db.insertCategory("testCat1", 1, "testCat2 schema");
+		}catch(SQLiteException ce){
+			error++;
+		}
+		assertEquals(1,error);
 		c=db.getAllCategories();
 		assertEquals(1,c.getCount());
-		assertEquals(-1,return_val);
+		c.close();
 	}
 	
 	// verify not null,empty string, or space-only string constraints
 	public void testInsertCategoryNullAndEmpty(){
-		//db.insertColor("TestColor", "ffffff", "link to drawable");
-		//nulls
-		return_val=db.insertCategory(null, 1, "testCat1 schema");
-		assertEquals(-1,return_val);
-		return_val=db.insertCategory("test3", 1, null);
-		assertEquals(-1,return_val);
+		int error=0;
+		return_val=0;
+		try{
+			return_val=db.insertCategory(null, 1, "testCat1 schema");
+		}catch(IllegalArgumentException success){
+			error++;
+		}
+		assertEquals(1,error);
+		assertEquals(0,return_val);
+		
+		error=0;
+		try{
+			return_val=db.insertCategory("test3", 1, null);
+		}catch(IllegalArgumentException success){
+			error++;
+		}
+		assertEquals(1,error);
+		assertEquals(0,return_val);
 		
 		//empty or space strings
-		return_val=db.insertCategory("", 1, "testCat1 schema");
-		assertEquals(-1,return_val);
-		return_val=db.insertCategory("test3", 1, "");
-		assertEquals(-1,return_val);
+		error=0;
+		try{
+			return_val=db.insertCategory("", 1, "testCat1 schema");
+		}catch(IllegalArgumentException success){
+			error++;
+		}
+		assertEquals(1,error);
+		assertEquals(0,return_val);
+		
+		error=0;
+		try{
+			return_val=db.insertCategory("test3", 1, "");
+		}catch(IllegalArgumentException success){
+			error++;
+		}
+		assertEquals(1,error);
+		assertEquals(0,return_val);
 	}
 	
-	/* verify failed insert with color id that does not exist
-	public void testInsertInvalidColorId(){
-		db.insertColor("TestColor", "ffffff", "link to drawable");
-		return_val=db.insertCategory("name", 2, "testCat1 schema");
-		assertEquals(-1,return_val);
-	}
-	*/
 	
 	//***************************************************************
 	//		                Insert Item
@@ -132,39 +159,96 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 	public void testInsertItem(){
 		db.insertCategory("test", 1, "schema");
 		return_val=db.insertItem("testItem1", 1, "testItem1 data");
+		assertEquals(1,return_val);
 		c=db.getAllItems();
 		assertTrue(c.moveToNext());
+		c.close();
 	}
 	
 	// test adding an item with a category id that does not exist
 	// expected return_val=-1
     public void testInsertItemInvalidCatId() { 
-    	return_val=db.insertItem("testItem1", 20, "testItem1 data");
-    	assertEquals(-1,return_val);
+    	error=0;
+    	return_val=0;
+    	try{
+    		return_val=db.insertItem("testItem1", 500, "testItem1 data");
+    	}catch(SQLiteConstraintException ec){	
+    		error++;
+    	}  	
+    	assertEquals(1,error);
+    	assertEquals(0,return_val);
     }
     
     // test adding an item with duplicate name 
-    // expected return_val=-1
+    // expected SQLiteConstraintException
     public void testInsertDuplicateItemName() { 
-    	db.fillTables();
+    	error=0;
+    	db.insertCategory("test", 1, "schema");
     	return_val=db.insertItem("duplicateTest", 1, "testItem1 data");
-    	return_val=db.insertItem("duplicateTest", 2, "testItem1 data");
-    	assertEquals(-1,return_val);
+    	assertEquals(1,return_val);
+    	return_val=0;
+    	try{
+    		return_val=db.insertItem("duplicateTest", 2, "testItem1 data");
+    	}catch(SQLiteConstraintException ce){
+			error++;
+		}
+		assertEquals(1,error);
+    	assertEquals(0,return_val);
      }
     
- // verify not null,empty string, or space-only string constraints 	
+    // verify not null,empty string, or space-only string constraints 	
     public void testInsertItemNullAndEmpty(){
- 		db.insertCategory("test", 1, "schema");
-    	return_val=db.insertItem(null, 1, "testItem1 data");
- 		assertEquals(-1,return_val);
- 		return_val=db.insertItem("testItem1", 0, "testItem1 data");
- 		assertEquals(-1,return_val);
-    	return_val=db.insertItem("testItem1", 1, null);
- 		assertEquals(-1,return_val);
-    	return_val=db.insertItem("", 1, "testItem1 data");
- 		assertEquals(-1,return_val);
-    	return_val=db.insertItem("testItem1", 1, "");
- 		assertEquals(-1,return_val);
+    	db.insertCategory("test", 1, "schema");
+    	
+    	error=0; 
+ 		return_val=0;
+    	try{ 
+    		return_val=db.insertItem(null, 1, "testItem1 data");
+    	}catch(IllegalArgumentException iae){ 
+    		error++; 
+    	}
+ 		assertEquals(1,error); // IAException 
+ 		assertEquals(0,return_val); // item not inserted
+ 		
+ 		error=0; 
+ 		return_val=0;
+    	try{  			
+    		return_val=db.insertItem("testItem1", 0, "testItem1 data");
+    	}catch(IllegalArgumentException iae){ 
+    		error++; 
+    	}	
+		assertEquals(1,error); // IAException 
+		assertEquals(0,return_val); // item not inserted
+ 		
+		error=0; 
+ 		return_val=0;
+    	try{  		
+    		return_val=db.insertItem("testItem1", 1, null);
+    	}catch(IllegalArgumentException iae){ 
+    		error++; 
+    	}
+    	assertEquals(1,error); // IAException 
+    	assertEquals(0,return_val); // item not inserted    	
+    	
+    	error=0; 
+ 		return_val=0;
+    	try{ 
+    		return_val=db.insertItem("", 1, "testItem1 data");
+	    }catch(IllegalArgumentException iae){ 
+			error++; 
+		}
+		assertEquals(1,error); // IAException 
+		assertEquals(0,return_val); // item not inserted
+ 		
+    	error=0; 
+ 		return_val=0;
+    	try{  		
+    		return_val=db.insertItem("testItem1", 1, "");
+    	}catch(IllegalArgumentException iae){ 
+    		error++; 
+    	}
+    	assertEquals(1,error); // IAException 
+    	assertEquals(0,return_val); // item not inserted
  	}
  	
  	
@@ -172,22 +256,45 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 	//***************************************************************
 	//		                  Insert Tag
 	//***************************************************************
+//**********************************************************************************************************************
 	
 	// simple insert of tag
 	public void testInsertTag(){
 		return_val=db.insertTag("testTag1");
 		c=db.getTag((int)return_val);
 		assertTrue(c.moveToNext());
+		c.close();
 	}
 	
 	// verify not null,empty string, or space-only string constraints	
 	public void testInsertTagNullAndEmpty(){
-		return_val=db.insertTag(null);
-		assertEquals(-1,return_val);
-		return_val=db.insertTag("");
-		assertEquals(-1,return_val);
-		return_val=db.insertTag("            ");
-		assertEquals(-1,return_val);
+		error=0;
+		return_val=0;
+		try{
+			return_val=db.insertTag(null);
+		}catch(IllegalArgumentException success){
+			error++;
+		}
+		assertEquals(0,return_val);
+		assertEquals(1,error);
+		
+		error=0;
+		try{
+			return_val=db.insertTag("");
+		}catch(IllegalArgumentException success){
+			error++;
+		}
+		assertEquals(0,return_val);
+		assertEquals(1,error);
+		
+		error=0;
+		try{
+			return_val=db.insertTag("            ");
+		}catch(IllegalArgumentException success){
+			error++;
+		}
+		assertEquals(0,return_val);
+		assertEquals(1,error);
 	}
 
 	
@@ -206,11 +313,17 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 	
 	// insert item tag that already exists
 	public void testInsertItemTagRelationshipFail(){
+		error=0;
+		return_val=0;
 		db.fillTables();
 		assertTrue(db.isItemTagged(1,1));
-		long return_val=db.insertItem_Tag(1,1);
-		assertTrue(return_val<0);
-		assertTrue(db.isItemTagged(1, 1));
+		try{
+			return_val=db.insertItem_Tag(1,1);
+		}catch(SQLiteConstraintException ce){
+			error++;
+		}
+		assertEquals(0,return_val);
+		assertEquals(1, error);
 	}
 
 	// test adding an item_tag with tag id that does not exist
@@ -221,20 +334,40 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     	assertTrue(c.moveToNext()); // verify item with id=1 exists
     	c=db.getTag(1);
     	assertFalse(c.moveToNext()); // verify tag with id=1 does not exist
-    	return_val=db.insertItem_Tag(1, 1);
-        assertEquals(-1,return_val);
+    	c.close();
+    	
+    	error=0;
+    	return_val=0;
+    	try{
+    		return_val=db.insertItem_Tag(1, 1);
+    	}catch(SQLiteConstraintException ce){
+    		error++;
+    	}
+        assertEquals(1,error);
+        assertEquals(0,return_val);
     }
     
     // test adding an item_tag with item id that does not exist
     public void testForItem_TagException1() {
-    	c=db.getItem(5);
+    	// verify item with id=1 does not exist
+    	c=db.getItem(1);
     	assertEquals(0,c.getCount());
-    	assertFalse(c.moveToNext()); // verify item with id=5 does not exist
+    	assertFalse(c.moveToNext()); 
+    	
+    	// add & verify tag with id=1 does exist
     	return_val=db.insertTag("testTag1");
     	c=db.getTag(1);
-    	assertTrue(c.moveToNext()); // verify tag with id=1 does exist
-    	return_val=db.insertItem_Tag(5, 1);
-        assertEquals(-1,return_val);
+    	assertTrue(c.moveToNext());
+        c.close();
+        
+        return_val=0;
+    	try{
+    		return_val=db.insertItem_Tag(1, 1);
+    	}catch(SQLiteConstraintException ce){
+    		error++;
+    	}
+        assertEquals(1,error);
+        assertEquals(0,return_val);
     }
 
    
@@ -460,60 +593,163 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     //*************************************************************************
     
     
-    int affected;
-    
+    // basic category update with no invalid arguments
     public void testUpdateCategory(){
-    	//TODO
+    	String newName="Updated Name";
+    	String newSchema="My New Schema";
+    	int newColor=2; 
+    	db.fillTables();
+    	long id=db.insertCategory("update me", 1, "My Old Schema");
+    	assertTrue(db.updateCategory((int)id,newName,newColor,newSchema));
+    	c=db.getCategory((int)id);
+    	assertEquals(1,c.getCount());
+    	assertTrue(c.moveToNext());
+    	assertEquals(newName,c.getString(1));
+    	assertEquals(newColor,c.getInt(2));
+    	assertEquals(newSchema,c.getString(3));
+    }
+    
+    // update to category name that already exists
+    public void testUpdateCategoryDuplicateName(){
+    	int exceptionValue=0;  //increment when exception caught then test
+    	String oldName="Old Name", newName="Updated Name";
+    	String oldSchema="Old Schema", newSchema="My New Schema";
+    	int oldColor=1, newColor=2; 
+    	long id=db.insertCategory(newName, 1, "schema");
+    	db.fillTables();
+    	id=db.insertCategory(oldName, oldColor, oldSchema);
+    	try{
+    		db.updateCategory((int)id,newName,newColor,newSchema);
+    	}catch(SQLiteConstraintException ex){
+    		Log.e("testUpdateCategoryDuplicateName", "ex=" + ex.toString());
+    		exceptionValue++;
+    	}finally{
+    		assertEquals(1,exceptionValue);
+    		c=db.getCategory((int)id);
+    		assertEquals(1,c.getCount());
+    		assertTrue(c.moveToNext());
+    		assertEquals(oldName,c.getString(1));
+    		assertEquals(oldColor,c.getInt(2));
+    		assertEquals(oldSchema,c.getString(3));
+    	}
+    	assertEquals(1,exceptionValue);
     }
     
     
+    // basic item update with no invalid arguments
     public void testUpdateItem(){
-    	//TODO
+    	String newName="Updated Name";
+    	String newData="My New Data";
+    	db.fillTables();
+    	long id=db.insertItem("update me", 1, "My Old Data");
+    	assertTrue(db.updateItem((int)id,newName,1,newData));
+    	c=db.getItem((int)id);
+    	assertEquals(1,c.getCount());
+    	assertTrue(c.moveToNext());
+    	assertEquals(newName,c.getString(1));
+    	assertEquals(1,c.getInt(2));
+    	assertEquals(newData,c.getString(3));
     }
     
-    
+    // basic tag update with no invalid arguments
     public void testUpdateTag(){
-    	//TODO
+    	String newName="Updated Name";
+    	db.fillTables();
+    	long id=db.insertTag("update me");
+    	assertTrue(db.updateTag((int)id,newName));
+    	c=db.getTag((int)id);
+    	assertEquals(1,c.getCount());
+    	assertTrue(c.moveToNext());
+    	assertEquals(newName,c.getString(1));
+
     }
     
+    // update to tag name that already exists
+    public void testUpdateTagDuplicateName(){
+    	int exceptionValue=0;  //increment when exception caught then test
+    	String oldName="Old Name", newName="Updated Name";
+    	long id=db.insertTag(newName);
+    	db.fillTables();
+    	id=db.insertTag(oldName);
+    	try{
+    		db.updateTag((int)id,newName);
+    	}catch(SQLiteConstraintException ex){
+    		exceptionValue++;
+    	}finally{
+    		assertEquals(1,exceptionValue);
+    		c=db.getTag((int)id);
+    		assertEquals(1,c.getCount());
+    		assertTrue(c.moveToNext());
+    		assertEquals(oldName,c.getString(1));
+    	}
+    	assertEquals(1,exceptionValue);
+    }
     
     //*************************************************************************
     //				Delete Tests
     //*************************************************************************
 
     public void testDeleteCatReinsert(){
-    	return_val=db.insertCategory("testCat1", 1, "testCat1 schema");
-    	int id = (int) return_val;
-		return_val=db.insertCategory("testCat1", 1, "testCat2 schema");
-		assertEquals(-1,return_val);
-		assertTrue(id != -1);
-		assertTrue(db.deleteCategory(id));
-		return_val = db.insertCategory("testCat1", 1, "testCat2 schema");
-		assertTrue(return_val != -1);
+    	int error=0;
+    	long id=db.insertCategory("testCat1", 1, "testCat1 schema");
+		assertEquals(1,id);
+
+    	try{
+			id=db.insertCategory("testCat1", 1, "testCat2 schema");
+    	}catch (SQLiteConstraintException ce){
+    		error++;
+    	}
+    	assertEquals(1,error);
+    	assertTrue(db.deleteCategory((int)id));
+		id = db.insertCategory("testCat1", 1, "testCat3 schema");
+		assertEquals(2,id);
     }
     
     public void testDeleteItemReinsert(){
-    	return_val=db.insertCategory("testCat1", 1, "testCat1 schema");
-    	return_val=db.insertItem("testIt1", 1, "Data");
-    	assertEquals(return_val,1);
-    	int id = (int) return_val;
-    	assertEquals(id,1);
-		return_val=db.insertItem("testIt1", 1, "Different Data");
-		assertEquals(return_val,-1);
-		assertEquals(-1,return_val);
-		assertTrue(id != -1);
-		assertTrue(db.deleteItem(id));
-		return_val = db.insertItem("testIt1", 1, "Different Data");
-		assertTrue(return_val != -1);
+    	int error=0;
+    	long id=db.insertCategory("testCat1", 1, "testCat1 schema");
+    	
+    	id=0;
+    	try{
+    		id=db.insertItem("testIt1", 1, "Data");
+    	}catch(SQLiteConstraintException ce){
+    		error++;
+    	}
+    	assertEquals(0,error);
+    	assertEquals(1,id);
+    	int id2=0;
+    	try{
+    		id=db.insertItem("testIt1", 1, "Different Data");
+    	}catch (SQLiteConstraintException ce){
+    		error++;
+    	}
+    	assertEquals(1,error);
+    	assertEquals(0,id2);
+		assertTrue(db.deleteItem((int)id));
+		id=0;
+		try{
+    		id=db.insertItem("testIt1", 1, "Different Data");
+    	}catch (SQLiteConstraintException ce){
+    		error++;
+    	}
+    	assertEquals(1,error);
+    	assertEquals(2,id);
     }
     
     public void testDeleteTagReinsert(){
-    	//TODO
+    	String name="TAG__NAME";
+    	int id1=(int)db.insertTag(name);
+    	db.fillTables();
+    	c=db.getTag(id1);
+    	assertEquals(1,c.getCount());
+    	db.deleteTag(id1);
+    	c=db.getTag(id1);
+    	assertEquals(0,c.getCount());
+    	int id2=(int)db.insertTag(name);
+    	c=db.getTag(id2);
+    	assertEquals(1,c.getCount());
+    	assertFalse(id1==id2);
     }
-    
-    
-    //TODO
-    
     
 }
 
