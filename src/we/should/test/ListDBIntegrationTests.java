@@ -125,10 +125,6 @@ public class ListDBIntegrationTests extends
 		}
 	}
 	public void testGetItemByTagStatic(){
-		db = new WSdb(getActivity());
-		db.open();
-		db.rebuildTables();
-		db.close();
 		c.save();
 		Item it1 = c.newItem();
 		Item it2 = c.newItem();
@@ -146,5 +142,27 @@ public class ListDBIntegrationTests extends
 		it1.save();
 		tags = Tag.getTags(getActivity());
 		assertEquals(2, tags.size());
+	}
+	public void testGetItemByTagStaticCategories(){
+		c.save();
+		Item it1 = c.newItem();
+		Item it2 = c.newItem();
+		Item it3 = c.newItem();
+		it1.addTag("test");
+		it1.set(Field.NAME, "Item1");
+		it2.addTag("test");
+		it2.set(Field.NAME, "Item2");
+		it3.set(Field.NAME, "Item3");
+		it1.save();
+		it2.save();
+		it3.save();
+		Tag t = it1.getTags().iterator().next();
+		Set<Item> testItems = Item.getItemsOfTag(t, getActivity());
+		assertEquals(2, testItems.size());
+		c = testItems.iterator().next().getCategory();
+		List<Item> items = c.getItems();
+		assertTrue(items.contains(it1));
+		assertTrue(items.contains(it2));
+		assertTrue(items.contains(it3));
 	}
 }
