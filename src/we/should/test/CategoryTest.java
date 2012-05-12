@@ -32,9 +32,8 @@ public class CategoryTest extends TestCase {
 	}
 	public void testConstructor(){
 		Category c = new GenericCategory("Test", new LinkedList<Field>(), null);
-		assertEquals(0, c.getFields().size());
+		assertEquals("Test", c.getName());
 		c = new GenericCategory(null, null, null);
-		assertEquals(0, c.getFields().size());
 		assertEquals("", c.getName());
 	}
 	public void testEquals(){
