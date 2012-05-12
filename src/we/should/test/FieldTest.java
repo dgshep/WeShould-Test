@@ -42,5 +42,10 @@ public class FieldTest extends TestCase {
 		assertFalse(test1.equals(null));
 
 	}
+	public void testGet(){
+		Field test = new Field("Field", FieldType.TextField);
+		assertEquals("Field", test.getName());
+		assertEquals(FieldType.TextField, test.getType());
+	}
 
 }
