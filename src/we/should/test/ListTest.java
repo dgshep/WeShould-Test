@@ -26,8 +26,7 @@ public class ListTest extends ActivityInstrumentationTestCase2<WeShouldActivity>
 	protected void setUp(){
 		List<Field> fields = Field.getDefaultFields();
 		//Log.v("Set Up List Test", fields.toString());
-		fields.remove(Field.COMMENT);
-		C = new GenericCategory("Test NO COMMENT FIELD", fields, null);
+		C = new GenericCategory("Test", fields, null);
 		db = new WSdb(getActivity());
 		db.open();
 		db.rebuildTables();
@@ -45,18 +44,16 @@ public class ListTest extends ActivityInstrumentationTestCase2<WeShouldActivity>
 		assertTrue(C.getItems().size() == 0);
 	}
 	public void testItemGetSetWBadArgument(){
+		Field badField = new Field("Bad Field", FieldType.TextField);
 		try {
-			it.get(Field.COMMENT);
+			it.set(badField, "This shouldn't be set");
 			fail("Should Throw illegal argument exception");
-		} catch(IllegalArgumentException success) {
-			
-		}
+		}catch(IllegalArgumentException success) {}
 		try {
-			it.set(Field.COMMENT, "This should not be added.");
+			it.get(badField);
 			fail("Should Throw illegal argument exception");
-		}catch(IllegalArgumentException success) {
-			
-		}
+		} catch(IllegalArgumentException success) {}
+		
 	}
 	public void testItemSetGetWGoodArgument(){
 		String testAd = "test address";
@@ -99,8 +96,12 @@ public class ListTest extends ActivityInstrumentationTestCase2<WeShouldActivity>
 	public void testGetFields(){
 		List<Field> fields = C.getFields();
 		List<Field> testFields = Field.getDefaultFields();
-		testFields.remove(Field.COMMENT);
 		assertEquals(testFields, fields);
+		List<Field> addField = new LinkedList<Field>();
+		addField.add(new Field("New Field", FieldType.Rating));
+		testFields.add(new Field("New Field", FieldType.Rating));
+		C = new GenericCategory("test W New Field", addField, null);
+		assertEquals(testFields, C.getFields());
 	}
 	public void testGetComment(){
 		Category Ctest = new GenericCategory("Default", Field.getDefaultFields(), getActivity());
@@ -138,12 +139,12 @@ public class ListTest extends ActivityInstrumentationTestCase2<WeShouldActivity>
 		}
 	}
 	public void testTags(){
-		Set<String> tags = it.getTags();
+		Set<Tag> tags = it.getTags();
 		assertEquals(0, tags.size());
 		it.addTag("AWESOME");
 		tags = it.getTags();
 		assertEquals(1, tags.size());
-		assertEquals("AWESOME", tags.iterator().next());
+		assertEquals("AWESOME", tags.iterator().next().toString());
 		it.addTag("AWESOME");
 		tags = it.getTags();
 		assertEquals(1, tags.size());

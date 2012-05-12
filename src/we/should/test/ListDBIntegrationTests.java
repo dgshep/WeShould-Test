@@ -1,18 +1,16 @@
 package we.should.test;
 
-import java.io.IOException;
-import java.util.*;
-
-import org.json.JSONException;
+import java.util.List;
+import java.util.Set;
 
 import we.should.WeShouldActivity;
 import we.should.database.WSdb;
-import we.should.list.*;
-import android.database.Cursor;
-import android.location.Address;
-import android.location.Geocoder;
+import we.should.list.Category;
+import we.should.list.Field;
+import we.should.list.GenericCategory;
+import we.should.list.Item;
+import we.should.list.Tag;
 import android.test.ActivityInstrumentationTestCase2;
-import android.util.Log;
 /**
  * This tests the interaction between the Database and List packages.
  * 
@@ -33,25 +31,24 @@ public class ListDBIntegrationTests extends
 	
 	@Override
 	protected void setUp(){
-		c = new GenericCategory("test", Field.getDefaultFields(), getActivity());
-	}
-	
-	public void testGetCategories(){
 		db = new WSdb(getActivity());
 		db.open();
 		db.rebuildTables();
 		db.close();
+		c = new GenericCategory("test", Field.getDefaultFields(), getActivity());
+	}
+	
+	public void testGetCategories(){
 		List<Field> dF = Field.getDefaultFields();
-		for(int i= 0; i < 100; i++){
+		for(int i= 0; i < 10; i++){
 			c = new GenericCategory(i+"", dF, getActivity());
 			c.save();
 		}
 		Set<Category> cats = Category.getCategories(getActivity());
-		assertEquals(100, cats.size());
-		for(int i = 0; i < 100; i++){
+		assertEquals(10, cats.size());
+		for(int i = 0; i < 10; i++){
 			assertTrue(cats.contains(new GenericCategory(i+"", dF, getActivity())));
 		}
-		assertTrue(true);
 	}
 	public void testGetItems(){
 		c = new GenericCategory("master", Field.getDefaultFields(), getActivity());
@@ -70,7 +67,7 @@ public class ListDBIntegrationTests extends
 		i.save();
 		c = null;
 		Set<Category> cats = Category.getCategories(getActivity());
-		assertEquals(101, cats.size());
+		assertEquals(1, cats.size());
 		List<Item> its = null;
 		for(Category cat : cats){
 			if(cat.getName().equals("master")){
@@ -100,7 +97,7 @@ public class ListDBIntegrationTests extends
 		i.save();
 		c = null;
 		Set<Category> cats = Category.getCategories(getActivity());
-		assertEquals(102, cats.size());
+		assertEquals(1, cats.size());
 		List<Item> its = null;
 		for(Category cat : cats){
 			if(cat.getName().equals("master1")){
@@ -111,7 +108,61 @@ public class ListDBIntegrationTests extends
 		}
 		assertEquals(1, its.size());
 		Item it = its.get(0);
-		assertEquals("New BIKE HOUSE", it.get(Field.NAME));
+		assertEquals("New BIKE HOUSE", it.getName());
+		assertEquals("This is new.", it.getComment());
 	}
-	
+	public void testGetTagsStatic(){
+		c.save();
+		Item it = c.newItem();
+		it.set(Field.NAME, "test");
+		it.addTag("Tag1");
+		it.addTag("Tag2");
+		it.addTag("Tag3");
+		it.save();
+		List<Tag> tags = Tag.getTags(getActivity());
+		for(Tag t : tags){
+			assertTrue(t.getId()>0);
+		}
+	}
+	public void testGetItemByTagStatic(){
+		c.save();
+		Item it1 = c.newItem();
+		Item it2 = c.newItem();
+		it1.addTag("test");
+		it1.set(Field.NAME, "Item1");
+		it2.addTag("test");
+		it2.set(Field.NAME, "Item2");
+		it1.save();
+		it2.save();
+		List<Tag> tags = Tag.getTags(getActivity());
+		assertEquals(1, tags.size());
+		Set<Item> testItems = Item.getItemsOfTag(tags.iterator().next(), getActivity());
+		assertEquals(2, testItems.size());
+		it1.addTag("test1");
+		it1.save();
+		tags = Tag.getTags(getActivity());
+		assertEquals(2, tags.size());
+	}
+	public void testGetItemByTagStaticCategories(){
+		c.save();
+		Item it1 = c.newItem();
+		Item it2 = c.newItem();
+		Item it3 = c.newItem();
+		it1.addTag("test");
+		it1.set(Field.NAME, "Item1");
+		it2.addTag("test");
+		it2.set(Field.NAME, "Item2");
+		it3.set(Field.NAME, "Item3");
+		it1.save();
+		it2.save();
+		it3.save();
+		Tag t = it1.getTags().iterator().next();
+		Set<Item> testItems = Item.getItemsOfTag(t, getActivity());
+		assertEquals(2, testItems.size());
+		c = testItems.iterator().next().getCategory();
+		List<Item> items = c.getItems();
+		assertTrue(items.contains(it1));
+		assertTrue(items.contains(it2));
+		assertTrue(items.contains(it3));
+	}
 }

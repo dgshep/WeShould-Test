@@ -163,6 +163,12 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 		c=db.getAllItems();
 		assertTrue(c.moveToNext());
 		c.close();
+		assertTrue(return_val>0);
+		return_val=db.insertItem("testItem2", 1, "testItem2 data");
+		assertTrue(return_val>0);
+		c=db.getAllItems();
+		assertTrue(c.moveToNext());
+		assertTrue(c.moveToNext());
 	}
 	
 	// test adding an item with a category id that does not exist
@@ -309,6 +315,8 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 		long return_val=db.insertItem_Tag(2,1);
 		assertTrue(return_val>0);
 		assertTrue(db.isItemTagged(2, 1));
+		Cursor c = db.getItemsOfTag(1);
+		assertTrue(c.getCount()>0);
 	}
 	
 	// insert item tag that already exists
@@ -689,6 +697,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     //				Delete Tests
     //*************************************************************************
 
+
     public void testDeleteCatReinsert(){
     	int error=0;
     	long id=db.insertCategory("testCat1", 1, "testCat1 schema");
@@ -752,27 +761,3 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     }
     
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
