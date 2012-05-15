@@ -109,6 +109,20 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 		c.close();
 	}
 	
+	// verify name max length 32 characters enforced
+	public void testInsertLongNameFail(){
+		int error=0;
+		try{
+			return_val=db.insertCategory("testCat1testCat1testCat1testCat11", 1, "testCat1 schema");
+		}catch(IllegalArgumentException ce){
+			error++;
+		}
+		assertEquals(1,error);
+		c=db.getAllCategories();
+		assertEquals(0,c.getCount());
+		c.close();
+	}
+	
 	// verify not null,empty string, or space-only string constraints
 	public void testInsertCategoryNullAndEmpty(){
 		int error=0;
@@ -169,6 +183,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 		c=db.getAllItems();
 		assertTrue(c.moveToNext());
 		assertTrue(c.moveToNext());
+		c.close();
 	}
 	
 	// test adding an item with a category id that does not exist
@@ -262,7 +277,6 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 	//***************************************************************
 	//		                  Insert Tag
 	//***************************************************************
-//**********************************************************************************************************************
 	
 	// simple insert of tag
 	public void testInsertTag(){
@@ -271,6 +285,20 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 		assertTrue(c.moveToNext());
 		c.close();
 	}
+	
+	// verify name max length 32 characters enforced
+		public void testTagLongNameFail(){
+			int error=0;
+			try{
+				return_val=db.insertTag("testTag1testTag1testTag1testTag11");
+			}catch(IllegalArgumentException ce){
+				error++;
+			}
+			assertEquals(1,error);
+			c=db.getAllTags();
+			assertEquals(0,c.getCount());
+			c.close();
+		}
 	
 	// verify not null,empty string, or space-only string constraints	
 	public void testInsertTagNullAndEmpty(){
@@ -315,8 +343,9 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 		long return_val=db.insertItem_Tag(2,1);
 		assertTrue(return_val>0);
 		assertTrue(db.isItemTagged(2, 1));
-		Cursor c = db.getItemsOfTag(1);
+		c = db.getItemsOfTag(1);
 		assertTrue(c.getCount()>0);
+		c.close();
 	}
 	
 	// insert item tag that already exists
@@ -392,6 +421,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
  		db.insertCategory("testCat5", 1, "testCat5 schema");
  		c=db.getAllCategories();
  		assertEquals(5,c.getCount());
+ 		c.close();
  	}
     
  	// verify proper number of records
@@ -404,6 +434,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
  		db.insertItem("testItem5", 1, "testItem data");
   		c=db.getAllItems();
   		assertEquals(5,c.getCount());
+  		c.close();
   	}
   	
   	// verify proper number of records
@@ -415,6 +446,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
    		db.insertTag("testTag5");
    		c=db.getAllTags();
    		assertEquals(5,c.getCount());
+   		c.close();
    	}
 	
     //verify getItem returns proper item
@@ -441,7 +473,8 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
  		assertEquals(name,c.getString(1));
  		assertEquals(catid,c.getInt(2));
  		assertEquals(data,c.getString(3));
-  	}
+ 		c.close();
+   	}
     
    	//verify getCategory returns proper Category
    	public void testGetCategory(){
@@ -465,7 +498,8 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
  		assertEquals(name,c.getString(1));
  		assertEquals(color,c.getInt(2));
  		assertEquals(data,c.getString(3));
-  	}
+ 		c.close();
+   	}
     
     //verify getTag returns proper tag
    	public void testGetTag(){
@@ -484,6 +518,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
  		assertEquals(1,c.getCount());
   		assertEquals(return_val, c.getInt(0));
  		assertEquals(name,c.getString(1));
+ 		c.close();
   	}
     
     
@@ -516,6 +551,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     	assertEquals(expect[1],c.getInt(0));
     	c.moveToNext();
     	assertEquals(expect[2],c.getInt(0));
+    	c.close();
     }
     
     // test get items of tag - 0 results
@@ -542,6 +578,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
  		c=db.getItemsOfTag(3);
  		assertEquals(0,c.getCount());
     	assertFalse(c.moveToNext());
+    	c.close();
     }
     
     public void testGetTagsOfItem(){
@@ -572,6 +609,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     	assertEquals(expect[1],c.getInt(0));
     	c.moveToNext();
     	assertEquals(expect[2],c.getInt(0));
+    	c.close();
     }
     
     
@@ -593,6 +631,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     	assertEquals(3,c.getInt(0));
     	c.moveToNext();
     	assertEquals(5,c.getInt(0));
+    	c.close();
     }
         
   
@@ -615,6 +654,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     	assertEquals(newName,c.getString(1));
     	assertEquals(newColor,c.getInt(2));
     	assertEquals(newSchema,c.getString(3));
+    	c.close();
     }
     
     // update to category name that already exists
@@ -639,10 +679,35 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     		assertEquals(oldName,c.getString(1));
     		assertEquals(oldColor,c.getInt(2));
     		assertEquals(oldSchema,c.getString(3));
+    		c.close();
     	}
     	assertEquals(1,exceptionValue);
     }
     
+    // update to category name that is > 32 characters
+    public void testUpdateCategoryLongName(){
+    	int error=0;  //increment when exception caught then test
+    	String oldName="Old Name", newName="Updated Name that is wayyyyyyyyyyy toooooo long";
+    	String oldSchema="Old Schema", newSchema="My New Schema";
+    	int oldColor=1, newColor=2; 
+    	id=(int)db.insertCategory(oldName, oldColor, oldSchema);
+    	try{
+    		db.updateCategory((int)id,newName,newColor,newSchema);
+    	}catch(IllegalArgumentException ex){
+    		Log.e("testUpdateCategoryDuplicateName", "ex=" + ex.toString());
+    		error++;
+    	}finally{
+    		assertEquals(1,error);
+    		c=db.getCategory((int)id);
+    		assertEquals(1,c.getCount());
+    		assertTrue(c.moveToNext());
+    		assertEquals(oldName,c.getString(1));
+    		assertEquals(oldColor,c.getInt(2));
+    		assertEquals(oldSchema,c.getString(3));
+    		c.close();
+    	}
+    	assertEquals(1,error);
+    }
     
     // basic item update with no invalid arguments
     public void testUpdateItem(){
@@ -657,6 +722,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     	assertEquals(newName,c.getString(1));
     	assertEquals(1,c.getInt(2));
     	assertEquals(newData,c.getString(3));
+    	c.close();
     }
     
     // basic tag update with no invalid arguments
@@ -669,8 +735,28 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     	assertEquals(1,c.getCount());
     	assertTrue(c.moveToNext());
     	assertEquals(newName,c.getString(1));
-
+    	c.close();
     }
+    
+    // update to tag name that is > 32 characters
+    public void testUpdateTagLongName(){
+    	int exceptionValue=0;  //increment when exception caught then test
+    	String oldName="Old Name", newName="Updated Name that is wayyyyyyyyyyyy too long";
+    	long id=db.insertTag(oldName);
+    	try{
+    		db.updateTag((int)id,newName);
+    	}catch(IllegalArgumentException ex){
+    		exceptionValue++;
+    	}finally{
+    		assertEquals(1,exceptionValue);
+    		c=db.getTag((int)id);
+    		assertEquals(1,c.getCount());
+    		assertTrue(c.moveToNext());
+    		assertEquals(oldName,c.getString(1));
+    	}
+    	c.close();
+    	assertEquals(1,exceptionValue);
+    }    
     
     // update to tag name that already exists
     public void testUpdateTagDuplicateName(){
@@ -689,6 +775,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     		assertEquals(1,c.getCount());
     		assertTrue(c.moveToNext());
     		assertEquals(oldName,c.getString(1));
+    		c.close();
     	}
     	assertEquals(1,exceptionValue);
     }
@@ -758,6 +845,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     	c=db.getTag(id2);
     	assertEquals(1,c.getCount());
     	assertFalse(id1==id2);
+    	c.close();
     }
     
 }
