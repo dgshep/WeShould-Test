@@ -101,7 +101,7 @@ public class ListTest extends ActivityInstrumentationTestCase2<WeShouldActivity>
 		addField.add(new Field("New Field", FieldType.Rating));
 		testFields.add(new Field("New Field", FieldType.Rating));
 		C = new GenericCategory("test W New Field", addField, null);
-		assertEquals(testFields, C.getFields());
+		assertEquals(addField, C.getFields());
 	}
 	public void testGetComment(){
 		Category Ctest = new GenericCategory("Default", Field.getDefaultFields(), getActivity());
