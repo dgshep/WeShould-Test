@@ -62,8 +62,8 @@ public class ListDBIntegrationTests extends
 		i.set(Field.ADDRESS, "4014 NE 58th");
 		i.set(Field.NAME, "NOT BIKE HOUSE");
 		i.set(Field.PHONENUMBER, "1-800-555-5555");
-		i.addTag("TestTag1");
-		i.addTag("TestTag2");
+		i.addTag("TestTag1", "FFFFFF");
+		i.addTag("TestTag2", "FFFFFF");
 		i.save();
 		c = null;
 		Set<Category> cats = Category.getCategories(getActivity());
@@ -115,9 +115,9 @@ public class ListDBIntegrationTests extends
 		c.save();
 		Item it = c.newItem();
 		it.set(Field.NAME, "test");
-		it.addTag("Tag1");
-		it.addTag("Tag2");
-		it.addTag("Tag3");
+		it.addTag("Tag1", "FFFFFF");
+		it.addTag("Tag2", "FFFFFF");
+		it.addTag("Tag3", "FFFFFF");
 		it.save();
 		List<Tag> tags = Tag.getTags(getActivity());
 		for(Tag t : tags){
@@ -128,9 +128,9 @@ public class ListDBIntegrationTests extends
 		c.save();
 		Item it1 = c.newItem();
 		Item it2 = c.newItem();
-		it1.addTag("test");
+		it1.addTag("test", "FFFFFF");
 		it1.set(Field.NAME, "Item1");
-		it2.addTag("test");
+		it2.addTag("test", "FFFFFF");
 		it2.set(Field.NAME, "Item2");
 		it1.save();
 		it2.save();
@@ -138,7 +138,7 @@ public class ListDBIntegrationTests extends
 		assertEquals(1, tags.size());
 		Set<Item> testItems = Item.getItemsOfTag(tags.iterator().next(), getActivity());
 		assertEquals(2, testItems.size());
-		it1.addTag("test1");
+		it1.addTag("test1", "FFFFFF");
 		it1.save();
 		tags = Tag.getTags(getActivity());
 		assertEquals(2, tags.size());
@@ -148,9 +148,9 @@ public class ListDBIntegrationTests extends
 		Item it1 = c.newItem();
 		Item it2 = c.newItem();
 		Item it3 = c.newItem();
-		it1.addTag("test");
+		it1.addTag("test", "FFFFFF");
 		it1.set(Field.NAME, "Item1");
-		it2.addTag("test");
+		it2.addTag("test", "FFFFFF");
 		it2.set(Field.NAME, "Item2");
 		it3.set(Field.NAME, "Item3");
 		it1.save();

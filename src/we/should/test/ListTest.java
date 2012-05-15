@@ -141,15 +141,15 @@ public class ListTest extends ActivityInstrumentationTestCase2<WeShouldActivity>
 	public void testTags(){
 		Set<Tag> tags = it.getTags();
 		assertEquals(0, tags.size());
-		it.addTag("AWESOME");
+		it.addTag("AWESOME", "FFFFFF");
 		tags = it.getTags();
 		assertEquals(1, tags.size());
 		assertEquals("AWESOME", tags.iterator().next().toString());
-		it.addTag("AWESOME");
+		it.addTag("AWESOME", "FFFFFF");
 		tags = it.getTags();
 		assertEquals(1, tags.size());
-		it.addTag("Cool  realy     cool");
-		it.addTag("testTag");
+		it.addTag("Cool  realy     cool", "FFFFFF");
+		it.addTag("testTag", "FFFFFF");
 		tags = it.getTags();
 		assertEquals(3, tags.size());
 	}
