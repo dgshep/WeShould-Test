@@ -88,7 +88,8 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 	
 	// simple category insert into empty database
 	public void testInsertCategory(){
-		return_val=db.insertCategory("testCat1", 1, "testCat1 schema");			c=db.getCategory((int)return_val);
+		return_val=db.insertCategory("testCat1", "abc123", "testCat1 schema");			
+		c=db.getCategory((int)return_val);
 		assertTrue(c.moveToNext());
 		c.close();
 	}
@@ -97,9 +98,9 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 	// verify unique name constraint
 	public void testInsertDuplicateCategoryFail(){
 		int error=0;
-		return_val=db.insertCategory("testCat1", 1, "testCat1 schema");
+		return_val=db.insertCategory("testCat1", "abc123", "testCat1 schema");
 		try{
-			return_val=db.insertCategory("testCat1", 1, "testCat2 schema");
+			return_val=db.insertCategory("testCat1", "abc123", "testCat2 schema");
 		}catch(SQLiteException ce){
 			error++;
 		}
@@ -109,26 +110,14 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 		c.close();
 	}
 	
-	// verify name max length 32 characters enforced
-	public void testInsertLongNameFail(){
-		int error=0;
-		try{
-			return_val=db.insertCategory("testCat1testCat1testCat1testCat11", 1, "testCat1 schema");
-		}catch(IllegalArgumentException ce){
-			error++;
-		}
-		assertEquals(1,error);
-		c=db.getAllCategories();
-		assertEquals(0,c.getCount());
-		c.close();
-	}
+
 	
 	// verify not null,empty string, or space-only string constraints
 	public void testInsertCategoryNullAndEmpty(){
 		int error=0;
 		return_val=0;
 		try{
-			return_val=db.insertCategory(null, 1, "testCat1 schema");
+			return_val=db.insertCategory(null, "abc123", "testCat1 schema");
 		}catch(IllegalArgumentException success){
 			error++;
 		}
@@ -137,7 +126,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 		
 		error=0;
 		try{
-			return_val=db.insertCategory("test3", 1, null);
+			return_val=db.insertCategory("test3", "abc123", null);
 		}catch(IllegalArgumentException success){
 			error++;
 		}
@@ -147,7 +136,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 		//empty or space strings
 		error=0;
 		try{
-			return_val=db.insertCategory("", 1, "testCat1 schema");
+			return_val=db.insertCategory("", "abc123", "testCat1 schema");
 		}catch(IllegalArgumentException success){
 			error++;
 		}
@@ -156,7 +145,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 		
 		error=0;
 		try{
-			return_val=db.insertCategory("test3", 1, "");
+			return_val=db.insertCategory("test3", "abc123", "");
 		}catch(IllegalArgumentException success){
 			error++;
 		}
@@ -171,7 +160,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 	
 	// simple item insert
 	public void testInsertItem(){
-		db.insertCategory("test", 1, "schema");
+		db.insertCategory("test", "abc123", "schema");
 		return_val=db.insertItem("testItem1", 1, "testItem1 data");
 		assertEquals(1,return_val);
 		c=db.getAllItems();
@@ -204,7 +193,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     // expected SQLiteConstraintException
     public void testInsertDuplicateItemName() { 
     	error=0;
-    	db.insertCategory("test", 1, "schema");
+    	db.insertCategory("test", "abc123", "schema");
     	return_val=db.insertItem("duplicateTest", 1, "testItem1 data");
     	assertEquals(1,return_val);
     	return_val=0;
@@ -219,7 +208,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     
     // verify not null,empty string, or space-only string constraints 	
     public void testInsertItemNullAndEmpty(){
-    	db.insertCategory("test", 1, "schema");
+    	db.insertCategory("test", "abc123", "schema");
     	
     	error=0; 
  		return_val=0;
@@ -280,32 +269,20 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 	
 	// simple insert of tag
 	public void testInsertTag(){
-		return_val=db.insertTag("testTag1");
+		return_val=db.insertTag("testTag1","abc123");
 		c=db.getTag((int)return_val);
 		assertTrue(c.moveToNext());
 		c.close();
 	}
 	
-	// verify name max length 32 characters enforced
-		public void testTagLongNameFail(){
-			int error=0;
-			try{
-				return_val=db.insertTag("testTag1testTag1testTag1testTag11");
-			}catch(IllegalArgumentException ce){
-				error++;
-			}
-			assertEquals(1,error);
-			c=db.getAllTags();
-			assertEquals(0,c.getCount());
-			c.close();
-		}
+
 	
 	// verify not null,empty string, or space-only string constraints	
 	public void testInsertTagNullAndEmpty(){
 		error=0;
 		return_val=0;
 		try{
-			return_val=db.insertTag(null);
+			return_val=db.insertTag(null,"abc123");
 		}catch(IllegalArgumentException success){
 			error++;
 		}
@@ -314,7 +291,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 		
 		error=0;
 		try{
-			return_val=db.insertTag("");
+			return_val=db.insertTag("","abc123");
 		}catch(IllegalArgumentException success){
 			error++;
 		}
@@ -323,7 +300,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 		
 		error=0;
 		try{
-			return_val=db.insertTag("            ");
+			return_val=db.insertTag("            ","abc123");
 		}catch(IllegalArgumentException success){
 			error++;
 		}
@@ -365,7 +342,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 
 	// test adding an item_tag with tag id that does not exist
     public void testItem_TagFailNoTag() {
-    	db.insertCategory("testCat1", 1, "testCat1 schema");
+    	db.insertCategory("testCat1", "abc123", "testCat1 schema");
     	db.insertItem("testItem1", 1, "testItem1 data");
     	c=db.getItem(1);
     	assertTrue(c.moveToNext()); // verify item with id=1 exists
@@ -392,7 +369,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     	assertFalse(c.moveToNext()); 
     	
     	// add & verify tag with id=1 does exist
-    	return_val=db.insertTag("testTag1");
+    	return_val=db.insertTag("testTag1","abc123");
     	c=db.getTag(1);
     	assertTrue(c.moveToNext());
         c.close();
@@ -414,11 +391,11 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 
     // verify proper number of records
  	public void testGetAllCategoriesNumber(){
- 		db.insertCategory("testCat1", 1, "testCat1 schema");
- 		db.insertCategory("testCat2", 1, "testCat2 schema");
- 		db.insertCategory("testCat3", 1, "testCat3 schema");
- 		db.insertCategory("testCat4", 1, "testCat4 schema");
- 		db.insertCategory("testCat5", 1, "testCat5 schema");
+ 		db.insertCategory("testCat1", "abc123", "testCat1 schema");
+ 		db.insertCategory("testCat2", "abc123", "testCat2 schema");
+ 		db.insertCategory("testCat3", "abc123", "testCat3 schema");
+ 		db.insertCategory("testCat4", "abc123", "testCat4 schema");
+ 		db.insertCategory("testCat5", "abc123", "testCat5 schema");
  		c=db.getAllCategories();
  		assertEquals(5,c.getCount());
  		c.close();
@@ -426,7 +403,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     
  	// verify proper number of records
   	public void testGetAllItemsNumber(){
-  		db.insertCategory("testCat1", 1, "testCat1 schema");
+  		db.insertCategory("testCat1", "abc123", "testCat1 schema");
  		db.insertItem("testItem1", 1, "testItem data");
  		db.insertItem("testItem2", 1, "testItem data");
  		db.insertItem("testItem3", 1, "testItem data");
@@ -439,11 +416,11 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
   	
   	// verify proper number of records
    	public void testGetAllTagsNumber(){
-   		db.insertTag("testTag1");
-   		db.insertTag("testTag2");
-   		db.insertTag("testTag3");
-   		db.insertTag("testTag4");
-   		db.insertTag("testTag5");
+   		db.insertTag("testTag1","abc123");
+   		db.insertTag("testTag2","abc123");
+   		db.insertTag("testTag3","abc123");
+   		db.insertTag("testTag4","abc123");
+   		db.insertTag("testTag5","abc123");
    		c=db.getAllTags();
    		assertEquals(5,c.getCount());
    		c.close();
@@ -457,8 +434,8 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
    		String data = "correct data";
    		
    		//insert data into database
-   		db.insertCategory("testCat1", 1, "testCat1 schema");
-  		db.insertCategory("testCat2", 1, "testCat2 schema");
+   		db.insertCategory("testCat1", "abc123", "testCat1 schema");
+  		db.insertCategory("testCat2", "abc123", "testCat2 schema");
  		db.insertItem("testItem1", 1, "testItem data");
  		db.insertItem("testItem2", 1, "testItem data");
  		db.insertItem("testItem3", 1, "testItem data");
@@ -480,23 +457,24 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
    	public void testGetCategory(){
   		//set values of item to check for
    		String name = "correct name";
-  		int color = 1;
+  		String color = "abc123";
    		String data = "correct schema";
    		
    		//insert data into database
-   		db.insertCategory("testCat1", 1, "testCat1 schema");
- 		db.insertCategory("testCat2", 1, "testCat2 schema");
+   		db.insertCategory("testCat1", "abc123", "testCat1 schema");
+ 		db.insertCategory("testCat2", "abc123", "testCat2 schema");
  		// next category will be the one to check for
  		return_val=db.insertCategory(name, color, data);
- 		db.insertCategory("testCat4", 1, "testCat4 schema");
- 		db.insertCategory("testCat5", 1, "testCat5 schema");
+ 		db.insertCategory("testCat4", "abc123", "testCat4 schema");
+ 		db.insertCategory("testCat5", "abc123", "test" +
+ 				"Cat5 schema");
   		
  		c=db.getCategory((int)return_val);
  		assertTrue(c.moveToNext());
  		assertEquals(1,c.getCount());
   		assertEquals(return_val, c.getInt(0));
  		assertEquals(name,c.getString(1));
- 		assertEquals(color,c.getInt(2));
+ 		assertEquals(color,c.getString(2));
  		assertEquals(data,c.getString(3));
  		c.close();
    	}
@@ -506,12 +484,15 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
   		//set values of item to check for
    		String name = "correct name";
    		
-   		db.insertTag("testTag1");
-   		db.insertTag("testTag2");
+   		db.insertTag("testTag1","abc123");
+   		db.insertTag("testTag2","abc123");
    		// look for next one
-   		return_val=db.insertTag(name);
-   		db.insertTag("testTag4");
-   		db.insertTag("testTag5");
+   		return_val=db.insertTag(name,"abc123");
+   		
+   		
+   		
+   		db.insertTag("testTag4","abc123");
+   		db.insertTag("testTag5","abc123");
   		
  		c=db.getTag((int)return_val);
  		assertTrue(c.moveToNext());
@@ -526,17 +507,17 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     public void testGetItemsOfTag(){
     	int[] expect = {2,4,5};
     	
-    	db.insertCategory("testCat1", 1, "testCat1 schema");
-  		db.insertCategory("testCat2", 1, "testCat2 schema");
+    	db.insertCategory("testCat1", "abc123", "testCat1 schema");
+  		db.insertCategory("testCat2", "abc123", "testCat2 schema");
  		db.insertItem("testItem1", 1, "testItem data");
  		db.insertItem("testItem2", 2, "testItem data");
  		db.insertItem("testItem3", 1, "testItem data");
  		db.insertItem("testItem4", 2, "testItem data");
  		db.insertItem("testItem5", 1, "testItem data");
- 		db.insertTag("testTag1");
-   		db.insertTag("testTag2");
-   		db.insertTag("testTag3");
-   		db.insertTag("testTag4");
+ 		db.insertTag("testTag1","abc123");
+   		db.insertTag("testTag2","abc123");
+   		db.insertTag("testTag3","abc123");
+   		db.insertTag("testTag4","abc123");
  		db.insertItem_Tag(1,1);
  		db.insertItem_Tag(2,2);
  		db.insertItem_Tag(4,2);
@@ -558,17 +539,17 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     public void testGetItemsOfTagNoResults(){
     	int[] expect = {2,4,5};
     	
-    	db.insertCategory("testCat1", 1, "testCat1 schema");
-  		db.insertCategory("testCat2", 1, "testCat2 schema");
+    	db.insertCategory("testCat1", "abc123", "testCat1 schema");
+  		db.insertCategory("testCat2", "abc123", "testCat2 schema");
  		db.insertItem("testItem1", 1, "testItem data");
  		db.insertItem("testItem2", 2, "testItem data");
  		db.insertItem("testItem3", 1, "testItem data");
  		db.insertItem("testItem4", 2, "testItem data");
  		db.insertItem("testItem5", 1, "testItem data");
- 		db.insertTag("testTag1");
-   		db.insertTag("testTag2");
-   		db.insertTag("testTag3");
-   		db.insertTag("testTag4");
+ 		db.insertTag("testTag1","abc123");
+   		db.insertTag("testTag2","abc123");
+   		db.insertTag("testTag3","abc123");
+   		db.insertTag("testTag4","abc123");
  		db.insertItem_Tag(1,1);
  		db.insertItem_Tag(2,2);
  		db.insertItem_Tag(4,2);
@@ -584,17 +565,17 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     public void testGetTagsOfItem(){
     	int[] expect = {4,2,1};
     	
-    	db.insertCategory("testCat1", 1, "testCat1 schema");
-  		db.insertCategory("testCat2", 1, "testCat2 schema");
+    	db.insertCategory("testCat1", "abc123", "testCat1 schema");
+  		db.insertCategory("testCat2", "abc123", "testCat2 schema");
  		db.insertItem("testItem1", 1, "testItem data");
  		db.insertItem("testItem2", 2, "testItem data");
  		db.insertItem("testItem3", 1, "testItem data");
  		db.insertItem("testItem4", 2, "testItem data");
  		db.insertItem("testItem5", 1, "testItem data");
- 		db.insertTag("testTag1");
-   		db.insertTag("testTag2");
-   		db.insertTag("testTag3");
-   		db.insertTag("testTag4");
+ 		db.insertTag("testTag1","abc123");
+   		db.insertTag("testTag2","abc123");
+   		db.insertTag("testTag3","abc123");
+   		db.insertTag("testTag4","abc123");
  		db.insertItem_Tag(1,1);
  		db.insertItem_Tag(5,4);
  		db.insertItem_Tag(4,2);
@@ -615,8 +596,8 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     
     //get items of category
     public void testGetItemsOfCategory(){
-    	db.insertCategory("testCat1", 1, "testCat1 schema");
-  		db.insertCategory("testCat2", 1, "testCat2 schema");
+    	db.insertCategory("testCat1", "abc123", "testCat1 schema");
+  		db.insertCategory("testCat2", "abc123", "testCat2 schema");
  		db.insertItem("testItem1", 1, "testItem data");
  		db.insertItem("testItem2", 2, "testItem data");
  		db.insertItem("testItem3", 1, "testItem data");
@@ -644,15 +625,15 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     public void testUpdateCategory(){
     	String newName="Updated Name";
     	String newSchema="My New Schema";
-    	int newColor=2; 
+    	String newColor="123abc"; 
     	db.fillTables();
-    	long id=db.insertCategory("update me", 1, "My Old Schema");
+    	long id=db.insertCategory("update me", "abc123", "My Old Schema");
     	assertTrue(db.updateCategory((int)id,newName,newColor,newSchema));
     	c=db.getCategory((int)id);
     	assertEquals(1,c.getCount());
     	assertTrue(c.moveToNext());
     	assertEquals(newName,c.getString(1));
-    	assertEquals(newColor,c.getInt(2));
+    	assertEquals(newColor,c.getString(2));
     	assertEquals(newSchema,c.getString(3));
     	c.close();
     }
@@ -662,8 +643,8 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     	int exceptionValue=0;  //increment when exception caught then test
     	String oldName="Old Name", newName="Updated Name";
     	String oldSchema="Old Schema", newSchema="My New Schema";
-    	int oldColor=1, newColor=2; 
-    	long id=db.insertCategory(newName, 1, "schema");
+    	String oldColor="aaaaaa", newColor="bbbbbb"; 
+    	long id=db.insertCategory(newName, "abc123", "schema");
     	db.fillTables();
     	id=db.insertCategory(oldName, oldColor, oldSchema);
     	try{
@@ -677,37 +658,14 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     		assertEquals(1,c.getCount());
     		assertTrue(c.moveToNext());
     		assertEquals(oldName,c.getString(1));
-    		assertEquals(oldColor,c.getInt(2));
+    		assertEquals(oldColor,c.getString(2));
     		assertEquals(oldSchema,c.getString(3));
     		c.close();
     	}
     	assertEquals(1,exceptionValue);
     }
     
-    // update to category name that is > 32 characters
-    public void testUpdateCategoryLongName(){
-    	int error=0;  //increment when exception caught then test
-    	String oldName="Old Name", newName="Updated Name that is wayyyyyyyyyyy toooooo long";
-    	String oldSchema="Old Schema", newSchema="My New Schema";
-    	int oldColor=1, newColor=2; 
-    	id=(int)db.insertCategory(oldName, oldColor, oldSchema);
-    	try{
-    		db.updateCategory((int)id,newName,newColor,newSchema);
-    	}catch(IllegalArgumentException ex){
-    		Log.e("testUpdateCategoryDuplicateName", "ex=" + ex.toString());
-    		error++;
-    	}finally{
-    		assertEquals(1,error);
-    		c=db.getCategory((int)id);
-    		assertEquals(1,c.getCount());
-    		assertTrue(c.moveToNext());
-    		assertEquals(oldName,c.getString(1));
-    		assertEquals(oldColor,c.getInt(2));
-    		assertEquals(oldSchema,c.getString(3));
-    		c.close();
-    	}
-    	assertEquals(1,error);
-    }
+
     
     // basic item update with no invalid arguments
     public void testUpdateItem(){
@@ -729,8 +687,8 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     public void testUpdateTag(){
     	String newName="Updated Name";
     	db.fillTables();
-    	long id=db.insertTag("update me");
-    	assertTrue(db.updateTag((int)id,newName));
+    	long id=db.insertTag("update me","abc123");
+    	assertTrue(db.updateTag((int)id,newName,"abc123"));
     	c=db.getTag((int)id);
     	assertEquals(1,c.getCount());
     	assertTrue(c.moveToNext());
@@ -738,35 +696,17 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     	c.close();
     }
     
-    // update to tag name that is > 32 characters
-    public void testUpdateTagLongName(){
-    	int exceptionValue=0;  //increment when exception caught then test
-    	String oldName="Old Name", newName="Updated Name that is wayyyyyyyyyyyy too long";
-    	long id=db.insertTag(oldName);
-    	try{
-    		db.updateTag((int)id,newName);
-    	}catch(IllegalArgumentException ex){
-    		exceptionValue++;
-    	}finally{
-    		assertEquals(1,exceptionValue);
-    		c=db.getTag((int)id);
-    		assertEquals(1,c.getCount());
-    		assertTrue(c.moveToNext());
-    		assertEquals(oldName,c.getString(1));
-    	}
-    	c.close();
-    	assertEquals(1,exceptionValue);
-    }    
+  
     
     // update to tag name that already exists
     public void testUpdateTagDuplicateName(){
     	int exceptionValue=0;  //increment when exception caught then test
     	String oldName="Old Name", newName="Updated Name";
-    	long id=db.insertTag(newName);
+    	long id=db.insertTag(newName,"abc123");
     	db.fillTables();
-    	id=db.insertTag(oldName);
+    	id=db.insertTag(oldName,"abc123");
     	try{
-    		db.updateTag((int)id,newName);
+    		db.updateTag((int)id,newName,"abc123");
     	}catch(SQLiteConstraintException ex){
     		exceptionValue++;
     	}finally{
@@ -787,23 +727,23 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 
     public void testDeleteCatReinsert(){
     	int error=0;
-    	long id=db.insertCategory("testCat1", 1, "testCat1 schema");
+    	long id=db.insertCategory("testCat1", "abc123", "testCat1 schema");
 		assertEquals(1,id);
 
     	try{
-			id=db.insertCategory("testCat1", 1, "testCat2 schema");
+			id=db.insertCategory("testCat1", "abc123", "testCat2 schema");
     	}catch (SQLiteConstraintException ce){
     		error++;
     	}
     	assertEquals(1,error);
     	assertTrue(db.deleteCategory((int)id));
-		id = db.insertCategory("testCat1", 1, "testCat3 schema");
+		id = db.insertCategory("testCat1", "abc123", "testCat3 schema");
 		assertEquals(2,id);
     }
     
     public void testDeleteItemReinsert(){
     	int error=0;
-    	long id=db.insertCategory("testCat1", 1, "testCat1 schema");
+    	long id=db.insertCategory("testCat1", "abc123", "testCat1 schema");
     	
     	id=0;
     	try{
@@ -834,18 +774,17 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     
     public void testDeleteTagReinsert(){
     	String name="TAG__NAME";
-    	int id1=(int)db.insertTag(name);
+    	int id1=(int)db.insertTag(name,"abc123");
     	db.fillTables();
     	c=db.getTag(id1);
     	assertEquals(1,c.getCount());
     	db.deleteTag(id1);
     	c=db.getTag(id1);
     	assertEquals(0,c.getCount());
-    	int id2=(int)db.insertTag(name);
+    	int id2=(int)db.insertTag(name,"abc123");
     	c=db.getTag(id2);
     	assertEquals(1,c.getCount());
     	assertFalse(id1==id2);
     	c.close();
     }
-    
 }
