@@ -563,7 +563,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     }
     
     public void testGetTagsOfItem(){
-    	int[] expect = {4,2,1};
+    	int[] expect = {1,2,4};
     	
     	db.insertCategory("testCat1", "abc123", "testCat1 schema");
   		db.insertCategory("testCat2", "abc123", "testCat2 schema");
