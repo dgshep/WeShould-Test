@@ -537,7 +537,6 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     
     // test get items of tag - 0 results
     public void testGetItemsOfTagNoResults(){
-    	int[] expect = {2,4,5};
     	
     	db.insertCategory("testCat1", "abc123", "testCat1 schema");
   		db.insertCategory("testCat2", "abc123", "testCat2 schema");
