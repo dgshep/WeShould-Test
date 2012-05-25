@@ -50,7 +50,7 @@ public class ListDBIntegrationTests extends
 			assertTrue(cats.contains(new GenericCategory(i+"", dF, getActivity())));
 		}
 	}
-	/*
+	
 	public void testGetItems(){
 		c = new GenericCategory("master", Field.getDefaultFields(), getActivity());
 		c.save();
@@ -89,7 +89,7 @@ public class ListDBIntegrationTests extends
 		assertEquals(2, it.getTags().size());
 	}
 	
-	*/
+	
 	public void testGetItemsDuplicates(){
 		c = new GenericCategory("master1", Field.getMovieFields(), getActivity());
 		c.save();
