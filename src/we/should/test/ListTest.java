@@ -4,6 +4,7 @@ import java.util.*;
 
 import junit.framework.TestCase;
 
+import we.should.Color;
 import we.should.WeShouldActivity;
 import we.should.database.WSdb;
 import we.should.list.*;
@@ -141,15 +142,15 @@ public class ListTest extends ActivityInstrumentationTestCase2<WeShouldActivity>
 	public void testTags(){
 		Set<Tag> tags = it.getTags();
 		assertEquals(0, tags.size());
-		it.addTag("AWESOME", "FFFFFF");
+		it.addTag("AWESOME", Color.DEFAULT);
 		tags = it.getTags();
 		assertEquals(1, tags.size());
 		assertEquals("AWESOME", tags.iterator().next().toString());
-		it.addTag("AWESOME", "FFFFFF");
+		it.addTag("AWESOME", Color.DEFAULT);
 		tags = it.getTags();
 		assertEquals(1, tags.size());
-		it.addTag("Cool  realy     cool", "FFFFFF");
-		it.addTag("testTag", "FFFFFF");
+		it.addTag("Cool  realy     cool", Color.DEFAULT);
+		it.addTag("testTag", Color.DEFAULT);
 		tags = it.getTags();
 		assertEquals(3, tags.size());
 	}

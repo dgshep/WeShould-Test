@@ -3,6 +3,7 @@ package we.should.test;
 import java.util.LinkedList;
 import java.util.List;
 
+import we.should.Color;
 import we.should.list.Category;
 import we.should.list.Field;
 import we.should.list.FieldType;
@@ -22,11 +23,11 @@ public class CategoryTest extends TestCase {
 	
 	public void testSetColor(){
 		Category c = new GenericCategory("Test", Field.getDefaultFields(), null);
-		assertTrue(c.getColor().equals(c.DEFAULT_COLOR));
-		c.setColor("FFFFF0");
-		assertTrue(c.getColor().equals("FFFFF0"));
+		assertTrue(c.getColor().equals(Category.DEFAULT_COLOR));
+		c.setColor(Color.Red);
+		assertTrue(c.getColor().equals(Category.DEFAULT_COLOR));
 		try{
-			c.setColor("GZ");
+			c.setColor(null);
 			fail("Should throw iae");
 		} catch(IllegalArgumentException success){
 			
