@@ -4,7 +4,7 @@ import java.util.*;
 
 import junit.framework.TestCase;
 
-import we.should.Color;
+import we.should.PinColor;
 import we.should.WeShouldActivity;
 import we.should.database.WSdb;
 import we.should.list.*;
@@ -143,17 +143,17 @@ public class ListTest extends ActivityInstrumentationTestCase2<WeShouldActivity>
 		Set<Tag> allTags = it.getTags();
 		assertEquals(0, allTags.size());
 		Set<Tag> tags = new HashSet<Tag>();
-		tags.add(new Tag("AWESOME", Color.DEFAULT));
+		tags.add(new Tag("AWESOME", PinColor.DEFAULT));
 		it.setTags(tags);
 		allTags = it.getTags();
 		assertEquals(1, allTags.size());
 		assertEquals("AWESOME", allTags.iterator().next().toString());
-		tags.add(new Tag("AWESOME", Color.DEFAULT));
+		tags.add(new Tag("AWESOME", PinColor.DEFAULT));
 		it.setTags(tags);
 		allTags = it.getTags();
 		assertEquals(1, allTags.size());
-		tags.add(new Tag("Cool  realy     cool", Color.DEFAULT));
-		tags.add(new Tag("testTag", Color.DEFAULT));
+		tags.add(new Tag("Cool  realy     cool", PinColor.DEFAULT));
+		tags.add(new Tag("testTag", PinColor.DEFAULT));
 		it.setTags(tags);
 		allTags = it.getTags();
 		assertEquals(3, allTags.size());
