@@ -809,9 +809,9 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     	db.insertTag("tag2","abc123");
     	db.insertTag("tag3","abc123");
     	db.insertTag("tag4","abc123"); 
-    	db.insertItem_Tag(3, 1);
-    	db.insertItem_Tag(3, 4);
-    	db.insertItem_Tag(5, 2);
+    	//db.insertItem_Tag(3, 1);
+    	//db.insertItem_Tag(3, 4);
+    	//db.insertItem_Tag(5, 4);
     	db.deleteTag(2);
     	db.deleteTag(3);
     	db.deleteItem(1);

@@ -26,8 +26,6 @@ public class ListDBIntegrationTests extends
 
 	public ListDBIntegrationTests() {
 		super("we.should.WeShouldActivity", WeShouldActivity.class);
-		
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override

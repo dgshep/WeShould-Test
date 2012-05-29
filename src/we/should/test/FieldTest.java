@@ -21,7 +21,6 @@ public class FieldTest extends TestCase {
 	 */
 	public FieldTest() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
