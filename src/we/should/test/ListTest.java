@@ -140,19 +140,23 @@ public class ListTest extends ActivityInstrumentationTestCase2<WeShouldActivity>
 		}
 	}
 	public void testTags(){
-		Set<Tag> tags = it.getTags();
-		assertEquals(0, tags.size());
-		it.addTag("AWESOME", Color.DEFAULT);
-		tags = it.getTags();
-		assertEquals(1, tags.size());
-		assertEquals("AWESOME", tags.iterator().next().toString());
-		it.addTag("AWESOME", Color.DEFAULT);
-		tags = it.getTags();
-		assertEquals(1, tags.size());
-		it.addTag("Cool  realy     cool", Color.DEFAULT);
-		it.addTag("testTag", Color.DEFAULT);
-		tags = it.getTags();
-		assertEquals(3, tags.size());
+		Set<Tag> allTags = it.getTags();
+		assertEquals(0, allTags.size());
+		Set<Tag> tags = new HashSet<Tag>();
+		tags.add(new Tag("AWESOME", Color.DEFAULT));
+		it.setTags(tags);
+		allTags = it.getTags();
+		assertEquals(1, allTags.size());
+		assertEquals("AWESOME", allTags.iterator().next().toString());
+		tags.add(new Tag("AWESOME", Color.DEFAULT));
+		it.setTags(tags);
+		allTags = it.getTags();
+		assertEquals(1, allTags.size());
+		tags.add(new Tag("Cool  realy     cool", Color.DEFAULT));
+		tags.add(new Tag("testTag", Color.DEFAULT));
+		it.setTags(tags);
+		allTags = it.getTags();
+		assertEquals(3, allTags.size());
 	}
 	
 }

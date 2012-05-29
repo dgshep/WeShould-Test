@@ -1,5 +1,6 @@
 package we.should.test;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -64,8 +65,10 @@ public class ListDBIntegrationTests extends
 		i.set(Field.ADDRESS, "4014 NE 58th");
 		i.set(Field.NAME, "NOT BIKE HOUSE");
 		i.set(Field.PHONENUMBER, "1-800-555-5555");
-		i.addTag("TestTag1", Color.Blue);
-		i.addTag("TestTag2", Color.Purple);
+		Set<Tag> tags = new HashSet<Tag>();
+		tags.add(new Tag("TestTag1", Color.Blue));
+		tags.add(new Tag("TestTag2", Color.Purple));
+		i.setTags(tags);
 		i.save();
 		c = null;
 		Set<Category> cats = Category.getCategories(getActivity());
@@ -119,12 +122,14 @@ public class ListDBIntegrationTests extends
 		c.save();
 		Item it = c.newItem();
 		it.set(Field.NAME, "test");
-		it.addTag("Tag1", Color.DEFAULT);
-		it.addTag("Tag2", Color.DEFAULT);
-		it.addTag("Tag3", Color.DEFAULT);
+		Set<Tag> tags = new HashSet<Tag>();
+		tags.add(new Tag("Tag1", Color.DEFAULT));
+		tags.add(new Tag("Tag2", Color.DEFAULT));
+		tags.add(new Tag("Tag3", Color.DEFAULT));
+		it.setTags(tags);
 		it.save();
-		List<Tag> tags = Tag.getTags(getActivity());
-		for(Tag t : tags){
+		List<Tag> allTags = Tag.getTags(getActivity());
+		for(Tag t : allTags){
 			assertTrue(t.getId()>0);
 		}
 	}
@@ -132,29 +137,37 @@ public class ListDBIntegrationTests extends
 		c.save();
 		Item it1 = c.newItem();
 		Item it2 = c.newItem();
-		it1.addTag("test", Color.DEFAULT);
+		Set<Tag> tags = new HashSet<Tag>();
+		tags.add(new Tag("test", Color.DEFAULT));
+		it1.setTags(tags);
 		it1.set(Field.NAME, "Item1");
-		it2.addTag("test", Color.DEFAULT);
+		tags = new HashSet<Tag>();
+		tags.add(new Tag("test", Color.DEFAULT));
+		it2.setTags(tags);
 		it2.set(Field.NAME, "Item2");
 		it1.save();
 		it2.save();
-		List<Tag> tags = Tag.getTags(getActivity());
-		assertEquals(1, tags.size());
-		Set<Item> testItems = Item.getItemsOfTag(tags.iterator().next(), getActivity());
+		List<Tag> allTags = Tag.getTags(getActivity());
+		assertEquals(1, allTags.size());
+		Set<Item> testItems = Item.getItemsOfTag(allTags.iterator().next(), getActivity());
 		assertEquals(2, testItems.size());
-		it1.addTag("test1", Color.DEFAULT);
+		it1.setTags(new HashSet<Tag>());
 		it1.save();
-		tags = Tag.getTags(getActivity());
-		assertEquals(2, tags.size());
+		allTags = Tag.getTags(getActivity());
+		assertEquals(1, allTags.size());
 	}
 	public void testGetItemByTagStaticCategories(){
 		c.save();
 		Item it1 = c.newItem();
 		Item it2 = c.newItem();
 		Item it3 = c.newItem();
-		it1.addTag("test", Color.DEFAULT);
+		Set<Tag> tags = new HashSet<Tag>();
+		tags.add(new Tag("test", Color.DEFAULT));
+		it1.setTags(tags);
 		it1.set(Field.NAME, "Item1");
-		it2.addTag("test", Color.DEFAULT);
+		tags = new HashSet<Tag>();
+		tags.add(new Tag("test", Color.DEFAULT));
+		it2.setTags(tags);
 		it2.set(Field.NAME, "Item2");
 		it3.set(Field.NAME, "Item3");
 		it1.save();
