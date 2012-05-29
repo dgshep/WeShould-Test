@@ -786,4 +786,47 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     	assertFalse(id1==id2);
     	c.close();
     }
+    
+    public void testBackup(){
+    	db.fillTables();
+    	String testString=db.Backup();
+    	Log.v("testBackup",testString);
+    }
+    
+    public void testRestore(){
+    	db.insertCategory("testCat1", "abc123", "testCat1 schema");
+    	db.insertCategory("testCat2", "abc123", "testCat2 schema");
+    	db.insertCategory("testCat3", "abc123", "testCat3 schema");
+    	db.insertCategory("testCat4", "abc123", "testCat4 schema");
+    	db.insertCategory("testCat5", "abc123", "testCat5 schema");
+    	db.insertCategory("testCat6", "abc123", "testCat6 schema");
+    	db.insertItem("item1", 4, "Data 1");
+    	db.insertItem("item2", 6, "Data 2");
+    	db.insertItem("item3", 4, "Data 3");
+    	db.insertItem("item4", 1, "Data 4");
+    	db.insertItem("item5", 6, "Data 5");
+    	db.insertTag("tag1","abc123");
+    	db.insertTag("tag2","abc123");
+    	db.insertTag("tag3","abc123");
+    	db.insertTag("tag4","abc123"); 
+    	db.insertItem_Tag(3, 1);
+    	db.insertItem_Tag(3, 4);
+    	db.insertItem_Tag(5, 2);
+    	db.deleteTag(2);
+    	db.deleteTag(3);
+    	db.deleteItem(1);
+    	db.deleteItem(2);
+    	db.deleteItem(4);
+    	db.deleteCategory(1);
+    	db.deleteCategory(2);
+    	db.deleteCategory(3);
+    	db.deleteCategory(5);
+    	
+    	String testString=db.Backup();
+    	Log.v("testRestore",testString);
+    	db.Restore(testString);
+    }
+    
+    
+    
 }
