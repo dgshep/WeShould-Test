@@ -3,7 +3,7 @@ package we.should.test;
 import java.util.List;
 import java.util.Set;
 
-import we.should.Color;
+import we.should.PinColor;
 import we.should.WeShouldActivity;
 import we.should.database.WSdb;
 import we.should.list.Category;
