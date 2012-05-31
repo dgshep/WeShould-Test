@@ -9,7 +9,7 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 
 /**
- * Test case for WeShould database - WSdb.java
+ * Test cases for WeShould database - WSdb.java
  * 
  * @author  Troy Schuring
  * 			CSE403 SP12
@@ -27,7 +27,7 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
 		super("we.should", WeShouldActivity.class);
 	}
 
-	@Override // Run before each test
+	@Override // Run before each test to clear database tables
 	public void setUp(){
 		db = new WSdb(getActivity());
 		db.open();
@@ -787,12 +787,14 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     	c.close();
     }
     
+    /*
     public void testBackup(){
-    	db.fillTables();
+    	db.rebuildTest();
+    	//db.fillTables();
     	String testString=db.Backup();
     	Log.v("testBackup",testString);
     }
-    
+    */
     public void testRestore(){
     	db.insertCategory("testCat1", "abc123", "testCat1 schema");
     	db.insertCategory("testCat2", "abc123", "testCat2 schema");
@@ -827,6 +829,12 @@ public class DBUnitTest extends ActivityInstrumentationTestCase2<WeShouldActivit
     	db.Restore(testString);
     }
     
+    public void testRestoreEmpty(){
+    	assertFalse(db.Restore(""));
+    }
     
+    public void testRestoreNull(){
+    	assertFalse(db.Restore(null));
+    }
     
 }
